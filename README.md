@@ -34,19 +34,19 @@ Fill in the available "Patient Data" fields in the sidebar. Note that selecting 
 2. Load required R packages
 3. Load text snippets for building a modular patient encounter note
 4. Pre-loaded functions (separate from app)
-  A. save note data function (savedocxData)
+  - save note data function (savedocxData)
 5. UI
-  A. Sidebar panel (for entering demographic/visit info)
-  B. Main panel
-    Tab 1: Editable textboxes that are preloaded with the relevant text snippets (decided by encounter context info from the sidebar)
-    Tab 2: 
-      Section A: Preview of note output (combining sidebar info + textboxes into minimally formatted note)
-      Section B: Save and billing buttons
+  - Sidebar panel (for entering demographic/visit info)
+  - Main panel
+    - Tab 1: Editable textboxes that are preloaded with the relevant text snippets (decided by encounter context info from the sidebar)
+    - Tab 2: 
+      - Section A: Preview of note output (combining sidebar info + textboxes into minimally formatted note)
+      - Section B: Save and billing buttons
 6. Server
-  A. Clinical encounter note creation sections (created depending on the demographic info from the sidebar and the text input in the editable textboxes)
-  B. Functions for combining all the note module sections into a single text object
-  C. Function for saving the note to a .docx file
-  D. Function for saving the encounter billing information to a csv file (will create a new csv file if one does not exist yet)
+  - Clinical encounter note creation sections (created depending on the demographic info from the sidebar and the text input in the editable textboxes)
+  - Functions for combining all the note module sections into a single text object
+  - Function for saving the note to a .docx file
+  - Function for saving the encounter billing information to a csv file (will create a new csv file if one does not exist yet)
 
 
 ## Creating your own personalized templates
