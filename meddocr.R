@@ -1,6 +1,6 @@
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
     ##   Shiny App for meddocs - clinical note creation from modular templates    ##
-    ##   Written by Daniel Mulder, April-May 2021                                 ##
+    ##   Written by Daniel Mulder, April-July 2021                                ##
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 
 
@@ -17,12 +17,12 @@
   #     Tab 1: Editable textboxes that are preloaded with the relevant text snippets (decided by encounter context info from the sidebar)
   #     Tab 2: 
   #       Section A: Preview of note output (combining sidebar info + textboxes into minimally formatted note)
-  #       Section B: Save and billing buttons
+  #       Section B: Save document and encounter buttons
   # 5. Server
   #   A. Clinical encounter note creation sections (created depending on the demographic info from the sidebar and the text input in the editable textboxes)
   #   B. Functions for combining all the note module sections into a single text object
   #   C. Function for saving the note to a .docx file
-  #   D. Function for saving the encounter billing information to a csv file (will create a new csv file if one does not exist yet)
+  #   D. Function for saving the encounter information to a csv file (will create a new csv file if one does not exist yet)
 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 
