@@ -26,7 +26,7 @@ Once the initial set up is completed, the app can be run repeatedly
 
 Note: the code in this repository (and the Shiny app contained within), once installed and run on a local machine, does not transmit information over the internet.
 
-Fill in the available "Patient Data" fields in the sidebar. Note that selecting some options (such the "endoscopy" or "foreign body phone call" visit types) will automatically cause further sidebar input sections to appear. Once all the requisite information has been added for the patient encounter in the sidebar, edit the note by working in the textboxes in the main panel (first tab "Composition", which is displayed by default). Once the textboxes are filled in to your satisfaction, navigate to the "Note Preview" tab (at the top of the main panel) to preview the note text. Once you are satisfied with the note text, you can click the "Save Note" button to save the note as a word document (.docx) and click the "Save Encounter to Billing Database" button to save the information into a billing table/spreadsheet (billing_data.csv) that is submission ready for Ontario's OHIP billing schedule, but can also serve to create a patient database for research or data mining. If a "billing_data.csv" file does not exist in the working directory, meddocr will create one, then add rows to the spreadsheet for future patient data.
+Fill in the available "Patient Data" fields in the sidebar. Note that selecting some options (such the "endoscopy" or "foreign body phone call" visit types) will automatically cause further sidebar input sections to appear. Once all the requisite information has been added for the patient encounter in the sidebar, edit the note by working in the textboxes in the main panel (first tab "Composition", which is displayed by default). Once the textboxes are filled in to your satisfaction, navigate to the "Note Preview" tab (at the top of the main panel) to preview the note text. Once you are satisfied with the note text, you can click the "Save Note" button to save the note as a word document (.docx) and click the "Save Encounter to Database" button to save the information into an encounter table/spreadsheet (`encounter_data.csv`) that can serve to create a patient database for research or data mining. If a `encounter_data.csv"` file does not exist in the working directory, meddocr will create one, then add rows to the spreadsheet for future patient data.
 
 ## Overall Script Structure
 1. Load required R packages
@@ -39,7 +39,7 @@ Fill in the available "Patient Data" fields in the sidebar. Note that selecting 
     - Tab 1: Editable textboxes that are preloaded with the relevant text snippets (decided by encounter context info from the sidebar)
     - Tab 2: 
       - Section A: Preview of note output (combining sidebar info + textboxes into minimally formatted note)
-      - Section B: Save and billing buttons
+      - Section B: Save and encounter buttons
 5. Server
   - Clinical encounter note creation sections (created depending on the demographic info from the sidebar and the text input in the editable textboxes)
   - Functions for combining all the note module sections into a single text object
