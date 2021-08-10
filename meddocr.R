@@ -7,19 +7,18 @@
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 
 # OVERALL SCRIPT STRUCTURE
-  # 1. Entire script is packed into a function "meddocr()" that runs without arguments
-  # 2. Load required R packages
-  # 3. Load text snippets for building a modular patient encounter note
-  # 4. Pre-loaded functions (separate from app)
+  # 1. Load required R packages
+  # 2. Load text snippets for building a modular patient encounter note
+  # 3. Pre-loaded functions (separate from app)
   #   A. save note data function (savedocxData)
-  # 5. UI
+  # 4. UI
   #   A. Sidebar panel (for entering demographic/visit info)
   #   B. Main panel
   #     Tab 1: Editable textboxes that are preloaded with the relevant text snippets (decided by encounter context info from the sidebar)
   #     Tab 2: 
   #       Section A: Preview of note output (combining sidebar info + textboxes into minimally formatted note)
   #       Section B: Save and billing buttons
-  # 6. Server
+  # 5. Server
   #   A. Clinical encounter note creation sections (created depending on the demographic info from the sidebar and the text input in the editable textboxes)
   #   B. Functions for combining all the note module sections into a single text object
   #   C. Function for saving the note to a .docx file
@@ -30,9 +29,7 @@
 ## Preamble
 # This script does not constitute medical advice and is only to be used for the purposes of learning or preparing personal templates
 # This script contains no real medical information, any information contained within is fictional example information
-# The aim of this script is to include more sections/text in general, since it is much easier to delete than type
-
-meddocr <- function () {
+# The aim of this script is to include more sections/text in general, since it is much easier to delete than add sections
   
 # Load required packages ----
 library(shiny) # for interactive web application framework
@@ -557,6 +554,8 @@ library(readxl) # for working with xlsx files
     docx1 <- eval(parse(text = output_final))
     
   }
+    
+  
   
 # Actual app ----
   
@@ -1992,4 +1991,5 @@ server <- function(input, output, session) {
     })
     }
   )
-}
+
+shinyApp(ui, server)
