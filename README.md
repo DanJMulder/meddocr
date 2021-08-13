@@ -17,7 +17,7 @@ This project aimed to create an open source open access template application tha
 
 ## Initial Set Up Requirements
 - A local installation of R and RStudio
-- Installed Packages: shiny, tidyverse, glue, lubridate, officeR, readxl
+- Installed Packages: shiny, tidyverse, glue, lubridate, officeR, readxl (which can be installed by running `install.packages(c("shiny", "tidyverse", "glue", "lubridate", "officer", "readxl"))` the before first time the app is run)
 
 ## Running the App
 Once the initial set up is completed, the app can be run repeatedly
