@@ -1,28 +1,28 @@
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-    ##   Shiny App for meddocs - clinical note creation from modular templates    ##
-    ##   Written by Daniel Mulder, April-July 2021                                ##
+    ##   Shiny App for meddocr - clinical note creation from modular templates    ##
+    ##   Written by Daniel Mulder, April-May 2021                                 ##
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 
 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 
 # OVERALL SCRIPT STRUCTURE
-  # 1. Load required R packages
-  # 2. Load text snippets for building a modular patient encounter note
-  # 3. Pre-loaded functions (separate from app)
-  #   A. save note data function (savedocxData)
-  # 4. UI
+  # 1. Required R packages attached
+  # 2. Text snippets loaded into memory (used for building a modular patient encounter note)
+  # 3. Functions that are separate from the Shiny app loaded
+  #   A. save note data function savedocxData()
+  # 4. Shiny App UI
   #   A. Sidebar panel (for entering demographic/visit info)
   #   B. Main panel
-  #     Tab 1: Editable textboxes that are preloaded with the relevant text snippets (decided by encounter context info from the sidebar)
+  #     Tab 1: Editable textbox fields that are pre-populated with the relevant text snippets (decided by encounter context info from the sidebar)
   #     Tab 2: 
   #       Section A: Preview of note output (combining sidebar info + textboxes into minimally formatted note)
   #       Section B: Save document and encounter buttons
-  # 5. Server
-  #   A. Clinical encounter note creation sections (created depending on the demographic info from the sidebar and the text input in the editable textboxes)
+  # 5. Shiny App Server
+  #   A. Clinical encounter note creation sections (created by combining the demographic info from the sidebar and the text input in the editable textboxes)
   #   B. Functions for combining all the note module sections into a single text object
   #   C. Function for saving the note to a .docx file
-  #   D. Function for saving the encounter information to a csv file (will create a new csv file if one does not exist yet)
+  #   D. Function for saving the encounter information to a .csv file (will create a new .csv file if one does not exist yet)
 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 
@@ -519,9 +519,9 @@ library(readxl) # for working with xlsx files
     If monitoring as outpatient, history suggestive of constipation, suggest trial of PEG 3350 - 0.4 to 1 g/kg (max 17 g) PO daily with plenty of fluid
     Attend to nearest emergency department if any fever, vomiting, severe worsening abdominal pain, bloody stool, or any other major concerning issues]"
 
-  # Billing column names ----
+  # Encounter column names ----
   
-    billing_columns <- c("cr",
+    encounter_columns <- c("cr",
                          "service_date",
                          "admit_date",
                          "diagnosis_code",
@@ -572,7 +572,7 @@ ui <- fluidPage(
     sidebarPanel(width = 4,
       
       # Sidebar Inputs: ----
-        # demographic and visit information that will be loaded into note and billing spreadsheet without having to retype info
+        # demographic and visit information that will be loaded into note and encounter spreadsheet without having to retype info
       titlePanel("Patient Data:"),
       numericInput("mrn", "Record Number:", value = 1234567, min = 0, max = 999999999),
       textInput("patient_name", "Patient name (First Last):", value = "DM"),
@@ -583,7 +583,7 @@ ui <- fluidPage(
       selectInput("visit_type", "Visit Type:", choices = visit_types_list),
       selectInput("location", "Location:", choices = c("clinic", "PRAC", "COPC", "ER", "inpatient")),
       
-      # Admission date, only show this panel if "inpatient" location type is selected, required for billing
+      # Admission date, only show this panel if "inpatient" location type is selected
       conditionalPanel(
         condition = "input.location == 'inpatient'",
         dateInput("admission_date", "Admission Date (YYYY-MM-DD):", value = today())),
@@ -760,7 +760,7 @@ ui <- fluidPage(
   actionButton("docx", "Save Note (as word document)", icon("download")),
   br(),
   br(),
-  actionButton("save", "Save Encounter to Billing Database", icon("database")),
+  actionButton("save", "Save Encounter to Database", icon("database")),
   br(),
   br()
   )))
@@ -1842,18 +1842,18 @@ server <- function(input, output, session) {
       savedocxData(formData(), input$patient_name, input$mrn, input$visit_type)
     })
     
-  # Billing Section ----
+  # Entounter Database Section ----
     
-    # when the billing button is pressed, the function below will load the billing spreadsheet and save a new row to it
-    # if there is no "billing_data.csv" file in the working directory then the code below will create one
-    # if there already si a "billing_data.csv" file, then the code below will add a line to it
+    # when the database button is pressed, the function below will load the encounter spreadsheet and save a new row to it
+    # if there is no "encounter_data.csv" file in the working directory then the code below will create one
+    # if there already si a "encounter_data.csv" file, then the code below will add a line to it
     
     observeEvent(input$save, {
       
       # below are a series of objects created from the visit context information (location, visit_type, scope type, age) from the sidebar
       # these statements combine to automatically calculate the billing code and fee amount for the encounter
       # there is also a separate text string object created that shows the math of the calculations
-      # there are some basic notes/caveats attached to some of the output that serve as reminders to prevent over/under billing an encounter and are removed manually before submitting my billing spreadsheet each week
+      # there are some basic notes/caveats attached to some of the output that serve as reminders to prevent over/under billing an encounter and can be removed manually after review
       
       location_name <- if ((input$location == "clinic") | (input$location == "PRAC")) {
         "pediatric outpatient clinic"
@@ -1939,8 +1939,8 @@ server <- function(input, output, session) {
       
       # chronic disease premium adds 50%, this is not included in the pre-calculated fees as it only applies to follow up visits
       
-        if (file.exists(paste0(getwd(), "/billing_data.csv"))) {
-          responses <- read_csv(paste0(getwd(), "/billing_data.csv"))
+        if (file.exists(paste0(getwd(), "/encounter_data.csv"))) {
+          responses <- read_csv(paste0(getwd(), "/encounter_data.csv"))
           this_patient <- t(as.data.frame(c(input$patient_name,
                                             input$mrn,
                                             paste(as.Date(input$encounter_date)),
@@ -1962,7 +1962,7 @@ server <- function(input, output, session) {
                                       "referring_provider",
                                       "my_math")
           responses2 <- rbind(responses, this_patient)
-          write_csv(responses2, file = paste0(getwd(), "/billing_data.csv"))
+          write_csv(responses2, file = paste0(getwd(), "/encounter_data.csv"))
         } else {
           this_patient <- t(as.data.frame(c(input$patient_name,
                                             input$mrn,
@@ -1985,7 +1985,7 @@ server <- function(input, output, session) {
                                       "referring_provider",
                                       "my_math")
           this_patient <- as.data.frame(this_patient)
-          write_csv(this_patient, file = paste0(getwd(), "/billing_data.csv"))
+          write_csv(this_patient, file = paste0(getwd(), "/encounter_data.csv"))
           }
       
     })
