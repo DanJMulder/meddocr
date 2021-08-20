@@ -47,10 +47,6 @@ Verifying the two main functions of the app (document output and database popula
 
 Meddocr has been created for use by clinicians when they are documenting patient encounters that will require data extraction in the future. Through semi-standardized document creation, the clinician is given flexibility when typing, but the document framework is preserved enough to enable rapid, robust mining for research. Once customized for a particular clinical trial or patient population, the app can save time for both the clinician (through template-style documentation) and the researcher (through rapid, straightforward data extraction). This app is secure in that it can be run entirely on a local machine without the need for an internet connection. This app is currently being used to create a database of semi-standardized document tracking in inflammatory bowel disease clinical trials at our institution.
 
-# Figures
-
-![Example Encounter](figures/example encounter.png)
-
 # Acknowledgements
 
 No financial support was required for this project.
