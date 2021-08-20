@@ -42,7 +42,7 @@ library(readxl) # for working with xlsx files
 
 # Load text modules ----
 
-  # Text Snippets and lists that can be loaded shiny app
+  # Text Snippets and lists that can be loaded into the shiny app
   
   # Lists ----
   
@@ -1846,7 +1846,7 @@ server <- function(input, output, session) {
     
     # when the database button is pressed, the function below will load the encounter spreadsheet and save a new row to it
     # if there is no "encounter_data.csv" file in the working directory then the code below will create one
-    # if there already si a "encounter_data.csv" file, then the code below will add a line to it
+    # if there already is an "encounter_data.csv" file, then the code below will add a line to it
     
     observeEvent(input$save, {
       
