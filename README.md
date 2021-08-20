@@ -1,5 +1,5 @@
 # meddocr
-A Shiny app that creates markdown templets for clinical encounters
+A Shiny app that creates text templates for clinical encounters
 by Daniel Mulder, MD, PhD
 
 ## Background
@@ -24,31 +24,31 @@ Once the initial set up is completed, the app can be run repeatedly
 
 - To load the app, open "meddocs.R" and source the script (click the "Run App" button or press `command + shift + return` on mac or `control + shift + enter` on windows)
 
-Note: the code in this repository (and the Shiny app contained within), once installed and run on a local machine, does not transmit information over the internet.
+Note: the code in this repository (and the Shiny app contained within), once installed and run on a local machine, does not transmit information over the internet, this can be verified by turning off the internet and using the app and seeing all functionality preserved.
 
-Fill in the available "Patient Data" fields in the sidebar. Note that selecting some options (such the "endoscopy" or "foreign body phone call" visit types) will automatically cause further sidebar input sections to appear. Once all the requisite information has been added for the patient encounter in the sidebar, edit the note by working in the textboxes in the main panel (first tab "Composition", which is displayed by default). Once the textboxes are filled in to your satisfaction, navigate to the "Note Preview" tab (at the top of the main panel) to preview the note text. Once you are satisfied with the note text, you can click the "Save Note" button to save the note as a word document (.docx) and click the "Save Encounter to Database" button to save the information into an encounter table/spreadsheet (`encounter_data.csv`) that can serve to create a patient database for research or data mining. If a `encounter_data.csv"` file does not exist in the working directory, meddocr will create one, then add rows to the spreadsheet for future patient data.
+Fill in the available "Patient Data" fields in the sidebar. Note that selecting some options (such the "endoscopy" or "foreign body phone call" visit types) will automatically cause further sidebar input sections to appear. Once all the requisite information has been added for the patient encounter in the sidebar, edit the note by working in the textboxes in the main panel (using the default tab "Composition"). Once the textboxes are filled in to your satisfaction, navigate to the "Note Preview" tab (at the top of the main panel) to preview the note text. Once you are satisfied with the note text, you can click the "Save Note" button to save the note as a word document (.docx) and click the "Save Encounter to Database" button to save the information into an encounter table/spreadsheet (`encounter_data.csv`) that can serve to create a patient database for research or data mining. If an `encounter_data.csv"` file does not exist in the working directory, meddocr will create one, then add rows to the spreadsheet for future patient data.
 
 ## Overall Script Structure
-1. Load required R packages
-2. Load text snippets for building a modular patient encounter note
-3. Pre-loaded functions (separate from app)
+1. Required R packages attached
+2. Text snippets loaded into memory (used for building a modular patient encounter note)
+3. Functions that are separate from the Shiny app loaded
   - save note data function: `savedocxData()'
-4. UI
+4. Shiny App UI
   - Sidebar panel (for entering demographic/visit info)
   - Main panel
-    - Tab 1: Editable textboxes that are preloaded with the relevant text snippets (decided by encounter context info from the sidebar)
+    - Tab 1: Editable textbox fields that are pre-populated with the relevant text snippets (decided by encounter context info from the sidebar)
     - Tab 2: 
       - Section A: Preview of note output (combining sidebar info + textboxes into minimally formatted note)
       - Section B: Save and encounter buttons
-5. Server
-  - Clinical encounter note creation sections (created depending on the demographic info from the sidebar and the text input in the editable textboxes)
+5. Shiny App Server
+  - Clinical encounter note creation sections (created by combining the demographic info from the sidebar and the text input in the editable textboxes)
   - Functions for combining all the note module sections into a single text object
   - Function for saving the note text to a .docx file
-  - Function for saving the encounter information to a csv file (and will create a new csv file if one does not exist yet)
+  - Function for saving the encounter information to a .csv file (and will create a new .csv file if one does not exist yet)
 
 
 ## Creating your own personalized templates
-The text snippets at the top of the meddocr.R script are simplified examples of my own personal snippets, that have a standardized language to enable data collection for research, thus they are for pediatric gastroenterology patients. The text snippets can, however, be edited and customized by the user. I suggest starting with an existing chief complaint and using the search function to discover where it is used throughout the script and then creating a new chief complaint and adding text snippets that apply to that chief complaint. The user will require basic understanding of R to personalize this script; most importantly: working with strings, lists, and if/else statements. If the customization is performed with the view that the core of the unit is the chief complaint then a customized template should be relatively straightforward to add. Detailed customization will require working knowledge of Shiny elements.
+The text snippets at the top of the meddocr.R script are simplified examples of my own personal snippets, that have a standardized language to enable data collection for research, thus they are for pediatric gastroenterology patients. The text snippets can, however, be edited and customized by the user. I suggest starting with an existing chief complaint and using the search function to discover where it is used throughout the script and then creating a new chief complaint and adding text snippets that apply to that chief complaint. The user will require basic understanding of R to personalize this script; most importantly: working with strings, lists, and if/else statements. If the customization is performed with the view that the chief complaint is the initial branch point in the document creation then a customized template should be relatively straightforward to compose. Detailed customization will require working knowledge of Shiny elements.
 
 ## Advantages and Limitations
-This app is will always be free. It can be downloaded and personalized as much as desired. A few hours of set up could potentially save hundreds of hours of documentation time over the ensuing years and enable rapid data mining for research. The app (although it can be run in a browser) is entirely hosted on the user's system and thus no personal health information is transmitted over the internet from the app. This app could potentially be customized to any clinical context.
+This app is will always be free. It can be downloaded and personalized as much as desired. A few hours of set up could potentially save hundreds of hours of documentation time over the ensuing years and enable rapid data mining for research. The app (although it can be run in a webbrowser) is entirely hosted on the user's system and thus no personal health information is transmitted over the internet when using the app. This app could potentially be customized to any clinical context.
