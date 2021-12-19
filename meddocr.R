@@ -115,21 +115,20 @@ referring_providers <- c("Not in list",
                          "Trisha Warren (NP Sydenham)")
 
 chief_complaints_list <- c("abdominal pain",
-"constipation",
-"pancreatitis",
-"choledocholithiasis",
-"abnormal liver tests",
-"upper GI symptoms",
-"GI bleed",
-"bloody diarrhea",
-"neonatal cholestasis",
-"possible celiac disease",
-"foreign body ingestion",
-"infant feeding difficulties",
-"failure to thrive",
-"IBD exacerbation",
-"foreign body ingestion",
-"generic")
+                           "abnormal liver tests",
+                           "bloody diarrhea",
+                           "choledocholithiasis",
+                           "constipation",
+                           "failure to thrive",
+                           "foreign body ingestion",
+                           "generic",
+                           "GI bleed",
+                           "IBD exacerbation",
+                           "infant feeding difficulties",
+                           "neonatal cholestasis",
+                           "pancreatitis",
+                           "possible celiac disease",
+                           "upper GI symptoms")
 
 visit_types_list <- c("new", "follow up", "endoscopy", "phone call")
 
