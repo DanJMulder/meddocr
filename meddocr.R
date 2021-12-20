@@ -621,7 +621,7 @@ billing_diagnosis <- c("diseases_of_pancreas_577",
 
 #Source in my previous patient data
 
-clinical_database <- read_excel("/Users/danielmulder/OneDrive - Kingston Health Sciences Centre/Clinical/clinical_database.xlsx",
+clinical_database <- read_excel("/Users/danielmulder/Documents/GitHub/meddocr/clinical_database.xlsx",
                                 col_types = c("text", "date", "text", "text", "numeric", "date", "date", "text",
                                               "text", "numeric", "numeric", "text", "text", "text", "text", "text", "text"))
 
@@ -1986,6 +1986,8 @@ server <- function(input, output, session) {
         known_patient_name <<- known_patient[[1]][1]
         known_patient_dob <<- known_patient[[2]][1]
         known_patient_sex <<- known_patient[[3]][1]
+        known_patient_referring_provider <<- known_patient[[13]][1]
+        known_patient_billing_diagnosis <<- known_patient[[9]][1]
         print(paste0(known_patient))
       } else {
         is_known_patient <<- FALSE
@@ -2005,11 +2007,21 @@ server <- function(input, output, session) {
                         if (is_known_patient == TRUE) {
                           paste(known_patient_dob)
                         })
-      updateSelectInput(session, "sex",
-                        value = 
+      updateTextInput(session, "sex",
+                        value =
                           if (is_known_patient == TRUE) {
-                            paste(known_patient_sex)
+                            selected = paste(known_patient_sex)
                           })
+      updateTextInput(session, "referring_provider",
+                      value =
+                        if (is_known_patient == TRUE) {
+                          selected = paste(known_patient_referring_provider)
+                        })
+      updateTextInput(session, "billing_diagnosis",
+                      value =
+                        if (is_known_patient == TRUE) {
+                          selected = paste(known_patient_billing_diagnosis)
+                        })
     })
     
 
