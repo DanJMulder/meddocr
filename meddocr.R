@@ -7,7 +7,7 @@
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 
 # OVERALL SCRIPT STRUCTURE
-  # 1. Required R packages attached
+  # 1. Required R packages
   # 2. Text snippets loaded into memory (used for building a modular patient encounter note)
   # 3. Functions that are separate from the Shiny app loaded
   #   A. save note data function savedocxData()
@@ -61,7 +61,10 @@ fields <- c("cr_number",
 
 referring_providers <- c("Not in list",
                          "Aderinola Ademidun",
+                         "Adina Birenbaum",
                          "Aleixo Muise",
+                         "Amanda Bates",
+                         "Ambrose Au",
                          "Amy Acker",
                          "Andrea Moore",
                          "Andrea Winthrop",
@@ -70,10 +73,14 @@ referring_providers <- c("Not in list",
                          "Anupam Sehgal",
                          "Arawn Therrien",
                          "Ashley Fay White",
+                         "Behdad Navabi",
+                         "Carolina Jimenez",
                          "Christen Cormier",
+                         "Ciaran McLoughlin",
                          "Cory Scott",
                          "Craig Lynch",
                          "Craig Mitchell (Napanee)",
+                         "Danielle Blouin",
                          "David Saleh",
                          "Dawa Samdup",
                          "Emily Kay",
@@ -82,8 +89,11 @@ referring_providers <- c("Not in list",
                          "Gillian MacLean",
                          "Greg Hammond, Trenton ER",
                          "Harvinder Chawla",
+                         "Hogay Azizy",
                          "Ivan Meiszinger",
+                         "Jae-Marie Ferdinand",
                          "Jagdeep Walia",
+                         "Jeffrey Di Tomasso",
                          "Jennifer Lynch",
                          "Jessica Ladouceur",
                          "Joanna Stanisz",
@@ -91,7 +101,10 @@ referring_providers <- c("Not in list",
                          "Kathryn Lockington",
                          "Keith Gregoire",
                          "Laura Wheaton",
+                         "Mackenzie Howatt",
+                         "Mahadeva Krishantha",
                          "Marina Kanellos-Sutton",
+                         "Mary Kate Gazendam",
                          "Michael Derynck",
                          "Michael Shirriff",
                          "Mila Kolar",
@@ -100,35 +113,43 @@ referring_providers <- c("Not in list",
                          "Moyo Adeyemi",
                          "Marina Kanellos-Sutton (NP)",
                          "Nadine Mitchell",
+                         "Natalie Mills",
+                         "Nicholas Carman",
+                         "Nina Replete",
                          "Peter MacPherson",
                          "Philip Macklem",
                          "R Garth Smith",
                          "Richard Van Wylick",
                          "Robert Connelly",
                          "Rohan Rakheja",
+                         "Ronald Goldstein",
                          "Ross Walker",
                          "Sangoh Lee",
                          "Sarah McKnight",
                          "Shalea Beckwith",
                          "Stephen Vanner",
                          "Svetlana Stryuts",
-                         "Trisha Warren (NP Sydenham)")
+                         "Tag Danforth",
+                         "Trisha Warren (NP Sydenham)",
+                         "William Marcoux",
+                         "Yuka Asai")
 
 chief_complaints_list <- c("abdominal pain",
-                           "abnormal liver tests",
-                           "bloody diarrhea",
-                           "choledocholithiasis",
-                           "constipation",
-                           "failure to thrive",
-                           "foreign body ingestion",
-                           "generic",
-                           "GI bleed",
-                           "IBD exacerbation",
-                           "infant feeding difficulties",
-                           "neonatal cholestasis",
-                           "pancreatitis",
-                           "possible celiac disease",
-                           "upper GI symptoms")
+"constipation",
+"pancreatitis",
+"choledocholithiasis",
+"abnormal liver tests",
+"upper GI symptoms",
+"GI bleed",
+"bloody diarrhea",
+"neonatal cholestasis",
+"possible celiac disease",
+"foreign body ingestion",
+"infant feeding difficulties",
+"failure to thrive",
+"IBD exacerbation",
+"foreign body ingestion",
+"generic")
 
 visit_types_list <- c("new", "follow up", "endoscopy", "phone call")
 
@@ -179,7 +200,7 @@ Current Therapy - ***"
 
 # ROS Snippets ----
 
-general_ros <- "General - *** energy; *** fevers, weight loss/gain, night sweats, rashes"
+general_ros <- "General - ** energy; *** fevers/night sweats, *** weight loss, *** rashes"
 
 infant_feeding_ros <- "Feeding History:
 Type - exclusive breastfeeding; formula *** mixed to concentration ***
@@ -191,13 +212,13 @@ Duration of feeds - ***
 Qualitative assessment of supply - ***
 Events during or following feeds - ***, ***Sandifer posturing"
 
-upper_gi_ros <- "Upper GI - *** nausea/vomiting, *** dysphagia/odynophagia, *** food sticking, *** aphthous ulcers"
+upper_gi_ros <- "Upper GI - *** heartburn, *** nausea/vomiting, *** dysphagia/odynophagia, *** food sticking, *** aphthous ulcers"
 
 eim_ros <- "Extraintestinal Manifestations of IBD - *** fever, red sore eyes, mouth sores, rashes, arthralgias"
 
 eoe_ros <- "Difficulty swallowing solids: ***
 Difficulty swallowing liquids: ***
-Pain with swallowing solids: ***
+Pain swallowing solids: ***
 Pain swallowing liquids: ***
 Food sticking in throat: ***
 Difficulty swallowing soft, sticky foods (e.g. white bread): ***
@@ -220,16 +241,13 @@ id_ros <- "ID - recent infectious symptoms (fever, coryza, etc), travel, sick co
 liver_ros <- "Liver - jaundice *** , scleral icterus *** , pale stools *** , dark urine *** , pruritus ***"
 
 celiac_ros <- "Nausea, vomiting
-Dermatitis herpetiformis (vs urticaria)
+Dermatitis herpetiformis
+Urticaria
 Dental enamel defects
 Short stature
 Failure to thrive
 Fractures
-Iron deficiency
-Anemia
-Osteoporosis
-Elevated liver enzymes
-Arthritis
+Arthralgia/arthritis
 Aphthous ulcers
 Amenorrhea
 Diarrhea
@@ -254,7 +272,7 @@ Arthralgia: yes***no
 Arthritis: yes***no
 Uveitis: yes***no
 Oral ulcers: yes***no
-Erythema nodosum or pyoderma gangrenosum: yes***no
+Skin reactions/rashes/erythema nodosum/pyoderma gangrenosum: yes***no
 Fever: yes***no
 
 Perianal pain: yes***no
@@ -269,7 +287,7 @@ ros_text <- paste(general_ros, upper_gi_ros, diet_recall_ros, stooling_ros, id_r
 # PMHx Snippets ----
 
 young_pmhx <- "Pregnancy - ***
-Birth - Born at *** (term?), BW *** g (AGA?), resuscitation?, passed meconium *** [within first 48 hol?]
+Birth - Born at ** (term), BW ** g (AGA), *** resuscitation, passed meconium ** [within first 48 hol]
 Since Birth - *** diagnoses, *** admissions, *** surgeries"
 
 older_pmhx <- "Since Birth - *** diagnoses, *** admissions, *** surgeries"
@@ -316,15 +334,15 @@ Ethnicity ***
 
 # PEx Snippets ----
 
-general_pex <- "Vitals - heart rate *** , blood pressure *** , RR *** , SpO2 *** % on room air?, temperature ***.
+general_pex <- "Vitals - heart rate *** , blood pressure *** , RR *** , SpO2 *** % on room air, temperature ***.
 Growth - height *** (*** percentile), weight *** (*** percentile), BMI *** (*** percentile).
-General - *** alert and interactive, no pallor, no scleral icterus, no rashes, no clubbing"
+General - ** alert and interactive, no pallor, no scleral icterus, no rashes, no clubbing"
 
-heent_pex <- "HEENT - *** neck/thyroid masses or enlargement?, oral lesions?"
+heent_pex <- "HEENT - *** neck/thyroid masses or enlargement, *** oral lesions"
 
-abdo_pex <- "Abdo - *** normal bowel sounds, soft and nontender with no masses and no hepatosplenomegaly [Carnett sign]"
+abdo_pex <- "Abdo - ** normal bowel sounds, soft and nontender with no masses and no hepatosplenomegaly [Carnett sign]"
 
-liver_pex <- "Abdo - *** normal bowel sounds, soft and nontender with no masses. Liver is palpable *** cm below the costal margin in the midclavicular line, liver span is *** cm, spleen is palpable about *** cm below the costal margin"
+liver_pex <- "Abdo - ** normal bowel sounds, soft and nontender with no masses. Liver is palpable *** cm below the costal margin in the midclavicular line, liver span is *** cm, spleen is palpable about *** cm below the costal margin"
 
 perianal_pex <- "Perianal inspection (supervised by ***) - unremarkable, normally placed anus with no skin tags, no fissures, no scars and with no sacral dimple [DRE only if unclear dx, to clarify diagnosis]"
 
@@ -381,7 +399,7 @@ assessment_non_blood_diarrhea <- "Potential causes include diet/Toddler's diarrh
 
 assessment_pancreatitis <- "Often the etiology of the first episodes of pancreatitis is unclear and does not become evident. Potential causes include obstruction, infection, trauma, toxins (including drugs), and genetic mutations [work up if >1 episode]."
 
-assessment_abnormal_liver_tests <- "At this point, the differential diagnosis is broad, including toxins/drug reaction, infection (especially viral hepatitis), autoimmune disease, metabolic disease (such as Wilson's disease), vascular compromise, and infiltrating mass."
+assessment_abnormal_liver_tests <- "At this point, the differential diagnosis is broad, including NAFLD/NASH, toxins/drug reaction, infection (especially viral hepatitis), autoimmune disease, metabolic disease (such as Wilson's disease), vascular compromise, and infiltrating mass."
 
 assessment_possible_celiac_disease <- "The differential diagnosis includes celiac disease, allergic-type enteropathy, inflammatory bowel disease, ***."
 
@@ -401,11 +419,13 @@ plan_text <- "We discussed
 - treatment
 - diet discussion for all patients"
 
-abdominal_pain_plan <- "- I reviewed the benign nature and initial options including 1) probiotics, 2) increased soluble fibre and other dietary modification and 3) cognitive behavioral therapy.
+abdominal_pain_plan <- "- I reviewed the benign nature and initial options including 1) probiotics, 2) increased soluble fibre and other dietary modification and 3) cognitive behavioral therapy (ontario.abiliticbt.com).
 - [If alarm findings:]
+
 - Stool - guaiac +/- calprotectin +/- O&P, +/- C&S, +/- H pylori stool antigen (or urea breath test)
 - Bloodwork - CBC, ESR, CRP, lytes, BUN, Cr, glucose, AST, ALT, Alk Phos, GGT, total bilirubin, direct bilirubin, albumin, lipase, tTG, IgA
-- Urinalysis, urine beta-hCG (if female)"
+- Urinalysis, urine beta-hCG (if female)
+- Discussed lifestyle interventions which can be quite effective and have worked for many patients with similar symptoms: small frequent meals, exercise, stress reduction/coping, avoid caffeine, avoid screentime before bed, avoid food 1-2 h before bed, consistent routine"
 
 constipation_plan <- "- Education - explained physiology/process of chronic constipation (stool harder, rectum stretched) with diagrams, positive/hope, PEG quite safe in usual doses (trace absorbed, PEG not addictive, PEG will not make bowel lazy)
 - Behaviour - routine toilet sitting 3-10 min 1-2 times per day (best within 1 hour after meals and in am), ensure feet supported (so can valsalva), no punishment (instead praise and reward), consider diary with Bristol ratings, physical activity can be recommended but role unproven
@@ -434,7 +454,15 @@ possible_celiac_disease_plan <- "- Upper endoscopy with biopsy for celiac diseas
 - Discussed that primary family members >3 yo should all be tested for celiac disease at least once and again if they have any symptoms/signs at any point
 - Discussed http://glutenfreedrugs.com/"
 
-choledocholithiasis_plan <- "- Repeat labs in morning (esp liver enzymes, liver function, amylase, lipase) and daily
+celiac_follow_up_plan <- "- Discussed reassuring clinical and biochemical picture
+- Discussed general healthy eating w celiac disease, does take oats (labelled gluten free)
+- I will submit a consult for social work to assist with medical expense deduction - Incremental Cost Calculation sheet from Canada Revenue Agency – type in Gluten Free or Celiac Disease and it should appear - advised to keep receipts and made sure have doctors note confirming diagnosis with date
+- Follow up in 6 months for annual clinical eval and diet check and labs (CBC, diff, tTG-IgA, total IgA, antiendomysial antibody, TSH, B12, folate, ferritin, transferrin saturation, 25-OH vitamin D plus any indicated by clinical concern)
+- Information provided regarding celiac-specific tax break, mother pays a company to do her taxes and will let the company know this and if support is needed from our side, she will call my office
+- Discussed that primary family members >3 yo should all be tested for celiac disease at least once and again if they have any symptoms/signs at any point
+- Discussed http://glutenfreedrugs.com/"
+
+choledocholithiasis_plan <- "- Repeat labs in morning (esp liver enzymes, liver function, lipase) and daily
 - Start IV with admission labs
 - Monitor temperature
 - Pain control with ibuprofen (and morphine if unable to control with ibuprofen)
@@ -446,7 +474,7 @@ choledocholithiasis_plan <- "- Repeat labs in morning (esp liver enzymes, liver 
 
 infant_feeding_difficulties_plan <- "If <6 months old - medication only after verifying formula preparation - if exclusively breastfed then consider could be a normal stool pattern - if repeated difficulty, can try 2-4 weeks of hypoallergenic formula - the usual constipation algorithm doesn't really apply, don't forget to consider Hirschsprung's"
 
-failure_to_thrive_plan <- "- Full GI FTT profile - CBC/diff, CRP, ESR, lytes, extended lytes, VBG, glucose, Cr, urea, albumin, ferritin, transferrin saturation, amylase, lipase, liver enzymes x4, liver function tests x3 (also ammonia if infant), total immunoglobulins, tTG-IgA (and total IgA level and anti-DGP if <2 yo), TSH, urinalysis, stool culture, stool virology, and stool O&P
+failure_to_thrive_plan <- "- Full GI FTT profile - CBC/diff, CRP, ESR, lytes, extended lytes, VBG, glucose, Cr, urea, albumin, ferritin, transferrin saturation, lipase, liver enzymes x4, liver function tests x3 (also ammonia if infant), total immunoglobulins, tTG-IgA (and total IgA level and anti-DGP if <2 yo), TSH, urinalysis, stool culture, stool virology, and stool O&P
 - Abdo U/S
 - 72 h dietary diary with our RD to review - we may need to work together to change feeding plan, concentrate formula
 - The usual approach to reflux is: PPI (if NG, can ensure adequate acid blockade of gastric aspirate pH of >=4 for 24h) for 1-2 weeks then adding domperidone for 1-2 weeks (during which time the child should have an ECG to establish baseline QTc interval that is safe before starting and then weekly ECGs for the initial weeks) then adding NJ or NG or cisapride (which the primary team applies for special access for and also needs ECG monitoring similar to domperidone)
@@ -455,11 +483,17 @@ failure_to_thrive_plan <- "- Full GI FTT profile - CBC/diff, CRP, ESR, lytes, ex
 
 gi_bleed_plan <- "- Recommend gen peds team admit for stabilization/monitoring
 - Start IV PPI infusion if hemodynamic concerns (start with bolus, also give bolus if increasing the dose) *** if using octreotide, it takes precedence over PPI if concern for variceal hemorrhage, but should have both if at all possible
+- Pantoprazole for 5-15 kg: 2 mg/kg/dose IV x1 then 0.2 mg/kg/hr IV
+- Pantoprazole for 15-40 kg: 1.8 mg/kg/dose IV x1 then 0.18 mg/kg/hr IV
+- Pantoprazole for >40 kg: 80 mg/dose IV x1 then 8 mg/hr IV
+- (for pantoprazole infusion in non-fluid restricted patients 40 mg/100 mL NS or D5W (0.4 mg/mL))
+- (for pantoprazole infusion in FLUID RESTRICTED patients 40 mg/50 mL NS or D5W (0.8 mg/mL))
 - Close monitoring of hemodynamic status
 - Only stop feeds and make NPO (if vomiting or if going for procedure)
 - Urgent CXR/AXR [to identify any radio-opaque foreign body] and abdo U/S [esp to identify mass lesions or evidence of liver disease/varices]
-- Labs - CBC and diff, type and screen, INR, PTT, CBC, VBG, lactate, ESR, CRP, lytes, extended lytes, urea, Cr, glucose, AST, ALT, Alk Phos, GGT, total bilirubin, direct bilirubin, ammonia x1, albumin, amylase, lipase, tTG, total IgA
-- [Stool - test for infections if diarrhea]"
+- Labs - CBC and diff, type and screen, INR, PTT, VBG, lactate, ESR, CRP, lytes, extended lytes, urea, Cr, glucose, AST, ALT, Alk Phos, GGT, total bilirubin, direct bilirubin, ammonia x1, albumin, lipase, tTG, total IgA
+- [Stool - test for infections if diarrhea]
+- [Antibiotics only if infection HPI or cirrhosis (amp and cefotaxime)]"
 
 abnormal_liver_tests_plan <- "- Treat elevated INR around 1.4 or greater with vitamin K IV - 5 mg if less than about 8 yo or else 10 mg (1 mg in an infant) - for at least 3 days
 - Follow liver enzymes daily until decreasing steadily x2 then q3 days
@@ -474,6 +508,7 @@ abnormal_liver_tests_plan <- "- Treat elevated INR around 1.4 or greater with vi
 - Transferrin saturation
 - tTG-IgA and total IgA
 - Ceruloplasmin (RO Wilson only if 4yo or more)
+- Lysosomal acid lipase
 - CBC with differential
 - 8 am cortisol, ACTH level
 - Urine toxin screen, BhCG
@@ -482,14 +517,14 @@ abnormal_liver_tests_plan <- "- Treat elevated INR around 1.4 or greater with vi
 - ANA, AntiSMA, antiLKM, AMA, total IgG, IgG subclasses, total protein, protein gap
 - Abdo ultrasound with liver dopplers"
 
-bloody_diarrhea_plan <- "- Bloodwork - CBC/diff, CRP, ESR, albumin, lytes, extended lytes, urea, Cr, glucose, AST, ALT, Alk phos, GGT, total bilirubin, direct bilirubin, amylase, lipase, tTG-IgA, total IgA, blood culture (if fever), VZV IgG, CMV/EBV serology, HBsAg, antiHBs, ASCA, ANCA, CGD testing (if young child <2, not just males, if Hx of infections and or skin lesions), iron studies if anemia
+bloody_diarrhea_plan <- "- Bloodwork - CBC/diff, CRP, ESR, albumin, lytes, extended lytes, urea, Cr, glucose, AST, ALT, Alk phos, GGT, total bilirubin, direct bilirubin, lipase, tTG-IgA, total IgA, blood culture (if fever), VZV IgG, CMV/EBV serology, HBsAg, antiHBs, ASCA, ANCA, CGD testing (if young child <2, not just males, if Hx of infections and or skin lesions), iron studies if anemia
 - PPD to be placed ASAP (delays in placement can delay therapy), CXR (to rule out TB in case of immediate need for immunosuppression)
 - Stool for C&S, O&P, cdiff, fecal calprotectin
 - Abdominal ultrasound
 - Rule out infection then plan for upper endoscopy and colonoscopy with biopsies
 - If going for colonoscopy, clean out would involve: on the day prior to the procedure have a light breakfast then to take only clear fluids (no reds, no blues though) until the procedure is done the next day, then take 1*** sachet of PicoSalax dissolved in 150 mL of cold water around lunchtime, then to drink 500 mL of water per hour for 4 hours, then a second *** sachet of PicoSalax (+ 2 L of water the same as the first dose) at least 6 h later, then on the morning of the procedure, should be reassessed for complete clean out (stool should be clear or yellow-clear liquid without sediment) and potentially could have a 3rd dose of PicoSalax in the same fashion as before or a normal saline enema (10-15 mL/kg up to 300 mL PR)
 - No NSAIDs, no opioids please (prefer frequent hot packs and acetaminophen)
-- If clinical deterioration, will be important to consider toxic megacolon, which should be investigated immediately with an abdo x-ray
+- If clinical deterioration, will be important to consider toxic megacolon, w`hich should be investigated immediately with an abdo x-ray
 - Admitted acute severe colitis patients should receive prophylactic anticoagulation due to the risks of devastating thrombotic events outweighing the minimal risk of increased bleeding
 - Therapy can be started if IBD visually confirmed on endoscopy (and when steroids or biologics are the treatment, after TB screen is negative)
 - If IBD confirmed, will eventually require MR-enterography
@@ -498,7 +533,7 @@ bloody_diarrhea_plan <- "- Bloodwork - CBC/diff, CRP, ESR, albumin, lytes, exten
 ibd_exacerbation_plan <- "- Start IV/PO steroids or EEN or IFX
 - Hold 5-ASA in hospital due to risk of toxic megacolon [if UC]
 - Stool infectious studies
-- Bloodwork - CBC, ESR, CRP, A-1-AGP, lytes, BUN, Cr, glucose, AST, ALT, Alk Phos, GGT, total bilirubin, direct bilirubin, albumin, amylase, lipase, tTG, IgA, blood culture
+- Bloodwork - CBC, ESR, CRP, lytes, BUN, Cr, glucose, AST, ALT, Alk Phos, GGT, total bilirubin, direct bilirubin, albumin, lipase, tTG, IgA, blood culture
 - Urinalysis, urine beta-hCG
 - Abdominal ultrasound
 - No NSAIDs, no opioids please (prefer frequent hot packs and acetaminophen)
@@ -508,7 +543,7 @@ ibd_exacerbation_plan <- "- Start IV/PO steroids or EEN or IFX
 pancreatitis_plan <- "- No prevention beyond general health and advised to avoid large high fat meals and to stay hydrated when sick
 - Seek care and mention possible pancreatitis history if happens again
 - Abdominal ultrasound now to look for obstructive cause
-- Labs - first episode (and all other after): amylase, lipase, ionized calcium, fasting lipid profile, CRP, total bilirubin, direct bilirubin, INR, albumin, AST, ALT, ALP, GGT
+- Labs - first episode (and all other after): lipase, ionized calcium, fasting lipid profile, CRP, total bilirubin, direct bilirubin, INR, albumin, AST, ALT, ALP, GGT
 - Labs - second and subsequent episodes: tTG-IgA, total IgA, total IgG, IgG4, A1AT
 - Other tests - sweat chloride, MRCP for anatomic abnormalities
 - Also consider repeat labs with calcium and triglycerides and repeat abdo ultrasound 4 weeks after initial incident"
@@ -517,16 +552,24 @@ upper_gi_symptoms_plan <- "- We discussed the differential at this point
 - The next step will be investigation: labs (CBC w diff, tTG-IgA, total IgA, CRP, ESR, albumin), upper GI contrast study (esp to look for stricture or anatomic abnormality)
 - It is likely that the next step after this will be an upper GI endoscopy with biopsies
 - Upper GI series
-- [Trial PPI]"
+- Discussed lifestyle interventions that could have modest effect: elevating head of bed, staying upright for at least 30 min after meals, avoiding acidic foods and trigger foods, not eating 1-2 h before bed
+- [Trial PPI - lansoprazole 1-3 mg/kg/day PO daily (max 30 mg per dose), LU:293, discussed taking 30 min before or 2 h after eating so empty stomach, discussed takes about 1-2 weeks for full effect, discussed rare risks in medium term of allergic reaction or infection]
+- Discussed can try annually to wean off PPI w half dose for 1 week then stop (if tolerated)"
+
+cmpa_plan <- "- Discussed about 1 in 10 infants with this condition will not respond to diet, prognosis still excellent
+- Can try egg, butter, mammal milk removal
+- Can just monitor until weaned
+- Can try extensively hydrolyzed formula - Nutramigen or Ailementum
+- Can refer to RD
+- Follow up in about 3 months to discuss rechallenge about 1 ounce for a few days at about first birthday"
 
 plan_for_endoscopy <- "We discussed the benefits of endoscopy in this situation, we had a brief discussion about the risks/alternatives also, we also discussed the cleanout/NPO preparation and how the process/procedure occur on the day of the scope"
 
 # Endoscopy Snippets ----
 
 endoscopy_preparation <- "The nature of the procedure, the risks and benefits and alternatives were explained and informed consent was obtained
-The patient was brought into the procedure room and anesthetized
 A time-out was completed verifying correct patient, procedure, allergies, and special equipment needed if applicable
-The patient was anesthetized as per the anesthesiology record"
+The patient was brought into the procedure room and anesthetized as per the anesthesiology record"
 
 upper_endoscopy_findings <- "Duodenum appearance - ***
 Stomach (including retroflexion view) appearance - ***
@@ -548,13 +591,13 @@ Bowel preparation was *** [adequate, suboptimal]"
 scope_findings_general <- "Biopsies were taken from each segment
 Deflation was performed and the endoscope was removed
 Complications: none
-Interventions: none"
+Interventions: none
+Estimated blood Loss: minimal"
 
 endoscopy_postprocedure <- "The patient was awoken from anesthesia and brought to the recovery room
 After the procedure the findings were reviewed with the caregivers and I reviewed reasons to seek immediate medical attention in the next 3-5 days, especially including more than a few specks of blood per rectum, melena, severe abdominal pain, fever, or any other concerning symptoms
 I will follow-up in clinic in 2-4 weeks
-Medication prescribed: none
-Estimated blood Loss: minimal"
+Medication prescribed: none"
 
 
 # Phone Call Snippets ----
@@ -574,7 +617,7 @@ Concern:
 ***
 
 Opinion:
-*** [beware this is based on second hand information transmitted via telephone]"
+*** (beware this is based on second hand information transmitted via telephone)"
 
 foreign_body_general <- "[Generally: emergent (<2 hours from presentation, regardless of NPO status), urgent (<24 hours from presentation, following usual NPO guidelines), and elective (>24 hours from presentation, following usual NPO guidelines)]
 [Foreign bodies distal to the stomach are very unlikely to be amenable to endoscopic retrieval, please consult general surgery, as this child may need admission for monitoring]
@@ -597,31 +640,32 @@ encounter_columns <- c("cr_number",
 "location",
 "referring_provider")
 
-billing_diagnosis <- c("diseases_of_pancreas_577",
-"constipation_564",
-"ulcerative_colitis_556",
-"dysphagia_787",
-"celiac_disease_579",
-"crohns_disease_555",
-"chromosomal_anomalies_578",
-"foreign_body_930",
-"nausea_787",
-"vomiting_787",
-"diseases_of_pancreas_577",
-"abdominal_pain_787",
-"colitis_w_mucous_564",
-"gastritis_535",
-"diarrhea_009",
-"bacterial_diseases_other_small_bowel_bacterial_overgrowth_040",
-"hepatitis_070",
-"thrombocytopenia_other_hemorrhagic_condition_287",
-"malnutrition_unspecified_263",
-"autism_299")
+billing_diagnosis <- c("abdominal_pain_787",
+                       "autism_299",
+                       "bacterial_diseases_other_small_bowel_bacterial_overgrowth_040",
+                       "celiac_disease_579",
+                       "chromosomal_anomalies_578",
+                       "colitis_w_mucous_564",
+                       "constipation_564",
+                       "crohns_disease_555",
+                       "diarrhea_009",
+                       "diseases_of_pancreas_577",
+                       "dysphagia_787",
+                       "esophagitis_530",
+                       "foreign_body_930",
+                       "gastritis_535",
+                       "hepatitis_070",
+                       "malnutrition_unspecified_263",
+                       "nausea_787",
+                       "polyp_anal_or_rectal_569",
+                       "thrombocytopenia_other_hemorrhagic_condition_287",
+                       "ulcerative_colitis_556",
+                       "vomiting_787")
 
 
 #Source in my previous patient data
 
-clinical_database <- read_excel("/Users/danielmulder/Documents/GitHub/meddocr/clinical_database.xlsx",
+clinical_database <- read_excel("clinical_database.xlsx",
                                 col_types = c("text", "date", "text", "text", "numeric", "date", "date", "text",
                                               "text", "numeric", "numeric", "text", "text", "text", "text", "text", "text"))
 
@@ -834,7 +878,7 @@ ui <- fluidPage(
         textAreaInput("pex_section", "Physical Examination", general_pex, width = "100%", rows = 6),
         textAreaInput("inv_section", "Investigations", inv, width = "100%", rows = 4),
         textAreaInput("impression_section",
-                      "Impression [Note: The ID line, ie '7 yo M presenting w X.', is added automatically below]",
+                      "Impression:",
                       impression_generic,
                       width = "100%",
                       rows = 7),
@@ -1149,13 +1193,11 @@ server <- function(input, output, session) {
     
     output$inv_saved_text <- renderText({input$inv_section})
     
-  # Impression Section ----
-    
-    output$impression_saved_text <- renderText({
+    observe({
       
       cc <- input$chief_complaint
       
-      age_raw <- 
+      age_raw <-
         if (is.na(input$dob)) {
           as.period(interval(start = "2010-01-01", end = input$encounter_date))
         } else {
@@ -1170,63 +1212,95 @@ server <- function(input, output, session) {
       } else {
         paste(age_raw$year, "year")}
       
-      sex <- input$sex
-      
-      heshe <- if (sex == "male") {
-        "he"
-      } else if (sex == "female") {
-        "she"
-      } else {
-        "they"
-      }
-      
-      himher <- if (sex == "male") {
-        "him"
-      } else if (sex == "female") {
-        "her"
-      } else {
-        "them"
-      }
-      
-      hisher <- if (sex == "male") {
-        "his"
-      } else if (sex == "female") {
-        "her"
-      } else {
-        "their"
-      }
-      
-      return(paste0(input$patient_name,
-                    " is a ",
-                    age,
-                    " old ",
-                    input$sex,
-                    " who presents with ",
-                    input$chief_complaint,
-                    "."))
-
-    })
-    
-    observe({
-      
-      cc <- input$chief_complaint
-      
       updateTextAreaInput(session, "impression_section",
                           value = 
                             if (cc == "neonatal cholestasis") {
-                              paste(impression_generic, impression_neonatal_cholestasis)
+                              paste0(input$patient_name,
+                                    " is a ",
+                                    age,
+                                    " old ",
+                                    input$sex,
+                                    " who presents with ",
+                                    cc,
+                                    ". ",
+                                    "\n",
+                                    impression_generic,
+                                    "\n",
+                                    impression_neonatal_cholestasis)
                             } else if (cc == "GI bleed") {
-                              paste(impression_generic, impression_gi_bleed)
+                              paste0(input$patient_name,
+                                    " is a ",
+                                    age,
+                                    " old ",
+                                    input$sex,
+                                    " who presents with ",
+                                    cc,
+                                    ". ",
+                                    "\n",
+                                    impression_generic,
+                                    "\n",
+                                    impression_gi_bleed)
                             } else if (cc == "choledocholithiasis") {
-                              paste(impression_generic, impression_choledocholithiasis)
+                              paste0(input$patient_name,
+                                     " is a ",
+                                     age,
+                                     " old ",
+                                     input$sex,
+                                     " who presents with ",
+                                     cc,
+                                     ". ",
+                                     "\n",
+                                     impression_generic,
+                                     "\n",
+                                    impression_choledocholithiasis)
                             } else if (cc == "abnormal liver tests") {
-                              paste(impression_generic, impression_abnormal_liver_tests)
+                              paste0(input$patient_name,
+                                     " is a ",
+                                     age,
+                                     " old ",
+                                     input$sex,
+                                     " who presents with ",
+                                     cc,
+                                     ". ",
+                                     "\n",
+                                     impression_generic,
+                                     "\n",
+                                    impression_abnormal_liver_tests)
                             } else if (cc == "upper GI symptoms") {
-                              paste(impression_generic, impression_upper_gi_symptoms)
+                              paste0(input$patient_name,
+                                    "is a",
+                                    input$sex,
+                                    "who presents with",
+                                    cc,
+                                    ".",
+                                    impression_generic,
+                                    impression_upper_gi_symptoms)
                             } else if (cc == "bloody diarrhea") {
-                              paste(impression_generic, impression_bloody_diarrhea)
+                              paste0(input$patient_name,
+                                     " is a ",
+                                     age,
+                                     " old ",
+                                     input$sex,
+                                     " who presents with ",
+                                     cc,
+                                     ". ",
+                                     "\n",
+                                     impression_generic,
+                                     "\n",
+                                    impression_bloody_diarrhea)
                             } else {
-                              paste(impression_generic, impression_text)
+                              paste0(input$patient_name,
+                                     " is a ",
+                                     age,
+                                     " old ",
+                                     input$sex,
+                                     " who presents with ",
+                                     cc,
+                                     ". ",
+                                     "\n",
+                                     impression_generic,
+                                     "\n",
+                                    impression_text)
                             }
       )
     })
@@ -1752,7 +1826,6 @@ server <- function(input, output, session) {
                 input$inv_section,
                 "",
                 "Impression",
-                recreate_impression_text(),
                 input$impression_section,
                 "",
                 input$assessment_section,
@@ -1871,7 +1944,7 @@ server <- function(input, output, session) {
         "",
         "Procedure Details:",
         procedure_details(),
-        "Proceduralist: Daniel Mulder, Staff Pediatric Gastroenterologist",
+        "Proceduralist: Daniel Mulder, Pediatric Gastroenterologist",
         "Location: KGH OR",
         procedure_done(),
         procedure_indication(),
@@ -1951,7 +2024,7 @@ server <- function(input, output, session) {
                            input$phone_call_section,
                            "",
                            input$plan_section,
-                           "Advise to attend to nearest emergency department if any major changes or other major concerning issues",
+                           "Advised to attend to nearest emergency department if any major changes or other major concerning issues",
                            "The advice was reviewed and all were in agreement",
                            "",
                            "Daniel Mulder, Pediatric Gastroenterologist, MD, FRCPC",
@@ -1976,18 +2049,15 @@ server <- function(input, output, session) {
     # When the load demographics button is pressed, autofill the previous info...
     # by first running the "loadDemographics function and then updating the demographic sidebar info using the "updateText" etc functions
 
-    
     loadDemographics <- reactive({
       if (input$cr_number %in% clinical_database$cr) {
         is_known_patient <<- TRUE
         print("Matching record found, loading prior demographic information...")
         known_patient <<- filter(clinical_database, clinical_database$cr == input$cr_number)
-        knonw_patient_cr <<- known_patient[[5]]
+        knonw_patient_cr <<- as.character(known_patient[[5]])
         known_patient_name <<- known_patient[[1]][1]
         known_patient_dob <<- known_patient[[2]][1]
-        known_patient_sex <<- known_patient[[3]][1]
-        known_patient_referring_provider <<- known_patient[[13]][1]
-        known_patient_billing_diagnosis <<- known_patient[[9]][1]
+        # known_patient_sex <<- as.character(known_patient[[3]][1])
         print(paste0(known_patient))
       } else {
         is_known_patient <<- FALSE
@@ -2007,21 +2077,11 @@ server <- function(input, output, session) {
                         if (is_known_patient == TRUE) {
                           paste(known_patient_dob)
                         })
-      updateTextInput(session, "sex",
-                        value =
-                          if (is_known_patient == TRUE) {
-                            selected = paste(known_patient_sex)
-                          })
-      updateTextInput(session, "referring_provider",
-                      value =
-                        if (is_known_patient == TRUE) {
-                          selected = paste(known_patient_referring_provider)
-                        })
-      updateTextInput(session, "billing_diagnosis",
-                      value =
-                        if (is_known_patient == TRUE) {
-                          selected = paste(known_patient_billing_diagnosis)
-                        })
+      # updateSelectInput(session, "sex",
+      #                   value = 
+      #                     if (is_known_patient == TRUE) {
+      #                       paste(known_patient_sex)
+      #                     })
     })
     
 
@@ -2037,11 +2097,11 @@ server <- function(input, output, session) {
     })
 
     
-  # Entounter Database Section ----
+  # Encounter Database Section ----
     
     # when the database button is pressed, the function below will load the encounter spreadsheet and save a new row to it
     # if there is no "encounter_data.csv" file in the working directory then the code below will create one
-    # if there already si a "encounter_data.csv" file, then the code below will add a line to it
+    # if there already is a "encounter_data.csv" file, then the code below will add a line to it
     
     observeEvent(input$save, {
       
@@ -2078,11 +2138,11 @@ server <- function(input, output, session) {
         if (input$scope_type == "Upper Endoscopy") {
           paste("Z399A")
         } else if (input$scope_type == "Upper Endoscopy and Colonoscopy") {
-          paste("Z399A and Z496A and E740A and E741A and E747A and E705A")
+          paste("Z399A,Z496A,E740A,E741A,E747A,E705A")
         } else if (input$scope_type == "Colonoscopy") {
-          paste("Z496A and E740A and E741A and E747A and E705A")
+          paste("Z496A,E740A,E741A,E747A,E705A")
         } else if (input$scope_type == "Upper Endoscopy Foreign Body Removal") {
-          paste("Z399A and E690A")
+          paste("Z399A,E690A")
         }
       } else if (input$visit_type == "phone call") {
         paste("K731A (at least 10 min, not if transferring and not if consult done that day or next day)")
@@ -2102,11 +2162,11 @@ server <- function(input, output, session) {
         80.05
       } else if (diagnosis_code == "Z399A") {
         92.50
-      } else if (diagnosis_code == "Z399A and Z496A and E740A and E741A and E747A and E705A") {
+      } else if (diagnosis_code == "Z399A,Z496A,E740A,E741A,E747A,E705A") {
         288.80
-      } else if (diagnosis_code == "Z496A and E740A and E741A and E747A and E705A") {
+      } else if (diagnosis_code == "Z496A,E740A,E741A,E747A,E705A") {
         196.30
-      } else if (diagnosis_code == "Z399A and E690A") {
+      } else if (diagnosis_code == "Z399A,E690A") {
         136.35
       } else if (diagnosis_code == "K731A (at least 10 min, not if transferring and not if consult done that day or next day)") {
         40.45
