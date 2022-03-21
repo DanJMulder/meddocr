@@ -2,8 +2,7 @@
     ##   Shiny App for meddocr - clinical note creation from modular templates    ##
     ##   Written by Daniel Mulder, April-May 2021                                 ##
     ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
-
-
+    
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 
 # OVERALL SCRIPT STRUCTURE
@@ -39,25 +38,25 @@ library(lubridate) # for creating/parsing date objects
 library(officer) # for saving notes to office formats
 library(readxl) # for working with xlsx files
 
-
 # Load text modules ----
 
   # Text Snippets and lists that can be loaded shiny app
   
   # Lists ----
 
-fields <- c("cr_number",
-"patient_name",
-"hpi_saved_text",
-"dob",
-"sex",
-"visit_type",
-"location",
-"chief_complaint",
-"scope_type",
-"foreign_body_type",
-"foreign_body_symptoms",
-"foreign_body_location")
+# fields <- c("cr_number",
+# "patient_name",
+# "hpi_saved_text",
+# "dob",
+# "sex",
+# "visit_type",
+# "location",
+# "chief_complaint",
+# "scope_type",
+# "foreign_body_type",
+# "foreign_body_symptoms",
+# "foreign_body_location",
+# "chronic_dz_premium")
 
 referring_providers <- c("Not in list",
                          "Aderinola Ademidun",
@@ -666,7 +665,7 @@ billing_diagnosis <- c("abdominal_pain_787",
 #Source in my previous patient data
 
 clinical_database <- read_excel("clinical_database.xlsx",
-                                col_types = c("text", "date", "text", "text", "numeric", "date", "date", "text",
+                                col_types = c("text", "date", "text", "text", "text", "date", "date", "text",
                                               "text", "numeric", "numeric", "text", "text", "text", "text", "text", "text"))
 
 # Functions for use within the app ----
@@ -678,7 +677,7 @@ clinical_database <- read_excel("clinical_database.xlsx",
   
   savedocxData <- function(data, patient_name, cr_number, visit_type) {
     
-    txt_filename <- paste0(getwd(), "/", patient_name, "_", cr_number, "_", visit_type, ".txt")
+    txt_filename <- paste0("/", patient_name, "_", cr_number, "_", visit_type, ".txt")
     lapply(data, write, txt_filename, append = TRUE, ncolumns = 1000)
     
     docx_filename <- paste0(getwd(), "/", patient_name, "_", cr_number, "_", visit_type, ".docx")
@@ -690,8 +689,7 @@ clinical_database <- read_excel("clinical_database.xlsx",
     docx1 <- eval(parse(text = output_final))
     
   }
-
-
+    
   
 # Actual app ----
   
@@ -753,8 +751,24 @@ ui <- fluidPage(
       # Billing diagnosis panel
       selectInput("billing_diagnosis",
                   tags$span(style = "font-weight: 400", "Billing Diagnosis"),
-                  choices = billing_diagnosis
-      ),
+                  choices = billing_diagnosis),
+      
+      conditionalPanel(
+        condition = "input.visit_type == 'follow up' &
+            (input.location == 'clinic' | input.location == 'PRAC' | input.location == 'COPC' | input.location == 'ER')",
+        checkboxInput("chronic_dz_premium", "Chronic Disease Premium", value = FALSE, width = NULL),
+        br(),
+        h4("Eligible chronic diseases:"),
+        p("Ulcerative colitis (556)"),
+        p("Crohns disease (555)"),
+        p("Cirrhosis (571)"),
+        p("Chromosomal anomalies (578)"),
+        p("Developmental Delay (315)"),
+        p("Educational problems (902)"),
+        p("Autism (299)"),
+        p("Behavioural disorders (313)"),
+        p("Cerebral palsy (343)"),
+        p("Thrombocytopenia/Other hemorrhagic condition (287)"))
       ),
     
   # Tab 1: Main panel for entering/editing text that will go into note ----
@@ -888,7 +902,17 @@ ui <- fluidPage(
     # If phone call visit type, displays relevant sections: call timing, calling physician and blank note
     conditionalPanel(
       condition = ("input.visit_type == 'phone call'"),
-      textInput("discussion_time_section", "Discussion Time (must be >=10 min to bill):", paste0(hour(now()), minute(now()), "h to ***"), "h to *** h [must be >=10 min]", width = "100%"),
+      textInput("discussion_time_section",
+                "Discussion Time (must be >=10 min to bill):",
+                paste0(hour(now()), (
+                       if (minute(now()) < 10) {
+                         paste0("0", minute(now()))
+                       } else {
+                         minute(now())
+                       }),
+                       "h to ***"),
+                "h to *** h [must be >=10 min]",
+                width = "100%"),
       textInput("call_from_section", "Call From:", "***", width = "100%"),
       textAreaInput("phone_call_section", "Phone Call Note", "***", width = "100%", rows = 10)
     ),
@@ -1345,7 +1369,6 @@ server <- function(input, output, session) {
     output$discussion_time_saved_text <- renderText({input$discussion_time_section})
     
     output$call_from_saved_text <- renderText({input$call_from_section})
-    
     
     observe({
       
@@ -2057,7 +2080,9 @@ server <- function(input, output, session) {
         knonw_patient_cr <<- as.character(known_patient[[5]])
         known_patient_name <<- known_patient[[1]][1]
         known_patient_dob <<- known_patient[[2]][1]
-        # known_patient_sex <<- as.character(known_patient[[3]][1])
+        known_patient_sex <<- known_patient[[3]][1]
+        known_patient_referring_provider <<- known_patient[[13]][1]
+        known_patient_billing_diagnosis <<- known_patient[[9]][1]
         print(paste0(known_patient))
       } else {
         is_known_patient <<- FALSE
@@ -2077,16 +2102,27 @@ server <- function(input, output, session) {
                         if (is_known_patient == TRUE) {
                           paste(known_patient_dob)
                         })
-      # updateSelectInput(session, "sex",
-      #                   value = 
-      #                     if (is_known_patient == TRUE) {
-      #                       paste(known_patient_sex)
-      #                     })
+      updateTextInput(session, "sex",
+                        value =
+                          if (is_known_patient == TRUE) {
+                            paste(known_patient_sex)
+                          })
+      updateTextInput(session, "referring_provider",
+                      value =
+                        if (is_known_patient == TRUE) {
+                          paste(known_patient_referring_provider)
+                        })
+      updateTextInput(session, "billing_diagnosis",
+                      value =
+                        if (is_known_patient == TRUE) {
+                          paste(known_patient_billing_diagnosis)
+                        })
     })
     
 
 
     # When the save button is clicked, the function below will save the text as a .docx file
+      # the savedocxData function is located just above the start of the shinyApp
       # (also saves as a txt file in case user does not use office)
       # In order to create the filename it requires the arguments: patient_name, cr and visit_type
       # the rest of the note is created from the formData() function above
@@ -2120,34 +2156,51 @@ server <- function(input, output, session) {
         "pediatrics ward"
       } else if (location == "OR") {
         "operating room"
+      } else {
+        "unknown location"
       }
       
-      diagnosis_code <- if (input$visit_type == "new") {
-          if (input$location == "clinic" | input$location == "PRAC" | input$location == "COPC" | input$location == "ER") {
-          paste("A265A")
-        } else if (input$location == "inpatient") {
-          paste("C265A")
-        }
-      } else if (input$visit_type == "follow up") {
-        if (input$location == "clinic" | input$location == "PRAC" | input$location == "COPC" | input$location == "ER") {
-          paste("A263A maybe w E078A (Ulcerative colitis (556) or Crohns disease (555) or Cirrhosis (571) or Chromosomal anomalies (578) or Developmental Delay (315) or Educational problems (902) or Autism (299) or Behavioural disorders (313) or Cerebral palsy (343) or Thrombocytopenia/Other hemorrhagic condition (287))")
-        } else if (input$location == "inpatient") {
-          paste("C263A maybe w E078A (Ulcerative colitis (556) or Crohns disease (555) or Cirrhosis (571) or Chromosomal anomalies (578) or Developmental Delay (315) or Educational problems (902) or Autism (299) or Behavioural disorders (313) or Cerebral palsy (343) or Thrombocytopenia/Other hemorrhagic condition (287))")
-        }
-      } else if (input$visit_type == "endoscopy") {
-        if (input$scope_type == "Upper Endoscopy") {
-          paste("Z399A")
-        } else if (input$scope_type == "Upper Endoscopy and Colonoscopy") {
-          paste("Z399A,Z496A,E740A,E741A,E747A,E705A")
-        } else if (input$scope_type == "Colonoscopy") {
-          paste("Z496A,E740A,E741A,E747A,E705A")
-        } else if (input$scope_type == "Upper Endoscopy Foreign Body Removal") {
-          paste("Z399A,E690A")
-        }
-      } else if (input$visit_type == "phone call") {
-        paste("K731A (at least 10 min, not if transferring and not if consult done that day or next day)")
-      }
-      
+      diagnosis_code <-
+        if (input$visit_type == "new") {
+          if (input$location == "clinic" |
+              input$location == "PRAC" |
+              input$location == "COPC" |
+              input$location == "ER") {
+            paste("A265A")
+          } else if (input$location == "inpatient") {
+            paste("C265A")
+          }
+        } else if (input$visit_type == "follow up") {
+          if ((input$location == "clinic" |
+              input$location == "PRAC" |
+              input$location == "COPC" |
+              input$location == "ER") &
+              input$chronic_dz_premium == TRUE) {
+            paste("A263A,E078A")
+          } else if ((input$location == "clinic" |
+                     input$location == "PRAC" |
+                     input$location == "COPC" |
+                     input$location == "ER") &
+                     input$chronic_dz_premium == FALSE) {
+            paste("A263A")
+          } else if (input$location == "inpatient") {
+            paste("C263A")
+          }
+        } else if (input$visit_type == "endoscopy") {
+          if (input$scope_type == "Upper Endoscopy") {
+            paste("Z399A")
+          } else if (input$scope_type == "Upper Endoscopy and Colonoscopy") {
+            paste("Z399A,Z496A,E740A,E741A,E747A,E705A")
+          } else if (input$scope_type == "Colonoscopy") {
+            paste("Z496A,E740A,E741A,E747A,E705A")
+          } else if (input$scope_type == "Upper Endoscopy Foreign Body Removal") {
+            paste("Z399A,E690A")
+          }
+        } else if (input$visit_type == "phone call") {
+            paste("K731A (at least 10 min, not if transferring and not if consult done that day or next day)")
+        } else {
+            "unknown diagnosis code"
+          }
       
       age_raw <- 
         if (is.na(input$dob)) {
@@ -2158,7 +2211,7 @@ server <- function(input, output, session) {
       
       fees_pre_age <- if (diagnosis_code == "A265A" | diagnosis_code == "C265A") {
         175.40
-      } else if (diagnosis_code == "A263A maybe w E078A (Ulcerative colitis (556) or Crohns disease (555) or Cirrhosis (571) or Chromosomal anomalies (578) or Developmental Delay (315) or Educational problems (902) or Autism (299) or Behavioural disorders (313) or Cerebral palsy (343) or Thrombocytopenia/Other hemorrhagic condition (287))" | diagnosis_code == "C263 maybe w E078 (Ulcerative colitis (556) or Crohns disease (555) or Cirrhosis (571) or Chromosomal anomalies (578) or Developmental Delay (315) or Educational problems (902) or Autism (299) or Behavioural disorders (313) or Cerebral palsy (343) or Thrombocytopenia/Other hemorrhagic condition (287))") {
+      } else if (diagnosis_code == "A263A") {
         80.05
       } else if (diagnosis_code == "Z399A") {
         92.50
@@ -2170,102 +2223,125 @@ server <- function(input, output, session) {
         136.35
       } else if (diagnosis_code == "K731A (at least 10 min, not if transferring and not if consult done that day or next day)") {
         40.45
+      } else {
+        0
       }
 
-      fees <- if (diagnosis_code == "K731A (at least 10 min, not if transferring and not if consult done that day or next day)") {
-        fees_pre_age
-      } else if (age_raw$year >= 16) {
-        fees_pre_age
-      } else if (age_raw$year >=5 && age_raw$year <16) {
-        fees_pre_age*1.1
-      } else if (age_raw$year >=2 && age_raw$year <5) {
-        fees_pre_age*1.15
-      } else if (age_raw$year >=1 && age_raw$year <2) {
-        fees_pre_age*1.2
-      } else if (age_raw$month >=1 && age_raw$year <1) {
-        fees_pre_age*1.25
-      } else if (age_raw$month <1 && age_raw$year <1) {
-        fees_pre_age*1.3
+      fees_w_age <- 
+        if (age_raw$year >= 16) {
+          age_premium <- "1"
+          fees_pre_age
+        } else if (age_raw$year >=5 && age_raw$year <16) {
+          age_premium <- "1.1"
+          fees_pre_age*1.1
+        } else if (age_raw$year >=2 && age_raw$year <5) {
+          age_premium <- "1.15"
+          fees_pre_age*1.15
+        } else if (age_raw$year >=1 && age_raw$year <2) {
+          age_premium <- "1.2"
+          fees_pre_age*1.2
+        } else if (age_raw$month >=1 && age_raw$year <1) {
+          age_premium <- "1.25"
+          fees_pre_age*1.25
+        } else if (age_raw$month <1 && age_raw$year <1) {
+          age_premium <- "1.3"
+          fees_pre_age*1.3
+        } else {
+          age_premium <- "1"
+          fees_pre_age
+        }
+      
+      fees <- if (diagnosis_code == "A263A,E078A") {
+        fees_w_age*1.5
       } else {
-        fees_pre_age
+        fees_w_age
       }
       
       billing_diagnosis <- input$billing_diagnosis
       
       # showing the math used to calculate billing fees
       
-      my_math_text <- paste0(fees_pre_age, "*", fees/fees_pre_age)
+      my_math_text <- if (diagnosis_code == "A263A,E078A") {
+        paste0("(", fees_pre_age, ")*", age_premium, "*1.5")
+      } else {
+        paste0(fees_pre_age, "*", fees/fees_pre_age)
+      }
       
-      # chronic disease premium adds 50%, this is not included in the pre-calculated fees as it only applies to follow up visits
+      units <- if (diagnosis_code == "A263A,E078A") {
+        paste0("1*", age_premium, "*1.5")
+      } else {
+        paste0("1*", age_premium)
+      }
       
-        if (file.exists(paste0(getwd(), "/encounter_data.csv"))) {
-          responses <- read_csv(paste0(getwd(), "/encounter_data.csv"))
-          this_patient <- t(as.data.frame(c(input$patient_name,
-                                            paste(as.Date(input$dob)),
-                                            input$sex,
-                                            my_math_text,
-                                            input$cr_number,
-                                            paste(as.Date(input$encounter_date)),
-                                            paste(as.Date(input$admission_date)),
-                                            diagnosis_code,
-                                            billing_diagnosis,
-                                            as.character(fees),
-                                            1,
-                                            location_name,
-                                            if (input$referring_provider == "Not in list") {
-                                              paste0(input$referring_provider_2)
-                                            } else {
-                                              paste0(input$referring_provider)
-                                            })))
-          colnames(this_patient) <- c("patient_name",
-                                      "date_of_birth",
-                                      "sex",
-                                      "my_math",
-                                      "cr",
-                                      "service_date",
-                                      "admit_date",
-                                      "diagnosis_code",
-                                      "billing_diagnosis",
-                                      "fees",
-                                      "units",
-                                      "location",
-                                      "referring_provider")
-          responses2 <- rbind(responses, this_patient)
-          write_csv(responses2, file = paste0(getwd(), "/encounter_data.csv"))
-        } else {
-          this_patient <- t(as.data.frame(c(input$patient_name,
-                                            paste(as.Date(input$dob)),
-                                            input$sex,
-                                            my_math_text,
-                                            input$cr_number,
-                                            paste(as.Date(input$encounter_date)),
-                                            paste(as.Date(input$admission_date)),
-                                            diagnosis_code,
-                                            billing_diagnosis,
-                                            as.character(fees),
-                                            1,
-                                            location_name,
-                                            if (input$referring_provider == "Not in list") {
-                                              paste0(input$referring_provider_2)
-                                            } else {
-                                              paste0(input$referring_provider)
-                                            })))
-          colnames(this_patient) <- c("patient_name",
-                                      "date_of_birth",
-                                      "sex",
-                                      "my_math",
-                                      "cr",
-                                      "service_date",
-                                      "admit_date",
-                                      "diagnosis_code",
-                                      "billing_diagnosis",
-                                      "fees",
-                                      "units",
-                                      "location",
-                                      "referring_provider")
-          this_patient <- as.data.frame(this_patient)
-          write_csv(this_patient, file = paste0(getwd(), "/encounter_data.csv"))
-          }
+      if (file.exists(paste0(getwd(), "/encounter_data.csv"))) {
+        responses <- read_csv(paste0(getwd(), "/encounter_data.csv"),
+                              show_col_types = FALSE)
+        this_patient <- t(as.data.frame(c(input$patient_name,
+                                          paste(as.Date(input$dob)),
+                                          input$sex,
+                                          my_math_text,
+                                          input$cr_number,
+                                          paste(as.Date(input$encounter_date)),
+                                          paste(as.Date(input$admission_date)),
+                                          diagnosis_code,
+                                          billing_diagnosis,
+                                          as.character(fees),
+                                          units,
+                                          location_name,
+                                          if (input$referring_provider == "Not in list") {
+                                            paste0(input$referring_provider_2)
+                                          } else {
+                                            paste0(input$referring_provider)
+                                          })))
+        colnames(this_patient) <- c("patient_name",
+                                    "date_of_birth",
+                                    "sex",
+                                    "my_math",
+                                    "cr",
+                                    "service_date",
+                                    "admit_date",
+                                    "diagnosis_code",
+                                    "billing_diagnosis",
+                                    "fees",
+                                    "units",
+                                    "location",
+                                    "referring_provider")
+        responses2 <- rbind(responses, this_patient)
+        write_csv(responses2, file = paste0(getwd(), "/encounter_data.csv"))
+      } else {
+        this_patient <- t(as.data.frame(c(input$patient_name,
+                                          paste(as.Date(input$dob)),
+                                          input$sex,
+                                          my_math_text,
+                                          input$cr_number,
+                                          paste(as.Date(input$encounter_date)),
+                                          paste(as.Date(input$admission_date)),
+                                          diagnosis_code,
+                                          billing_diagnosis,
+                                          as.character(fees),
+                                          units,
+                                          location_name,
+                                          if (input$referring_provider == "Not in list") {
+                                            paste0(input$referring_provider_2)
+                                          } else {
+                                            paste0(input$referring_provider)
+                                          })))
+        colnames(this_patient) <- c("patient_name",
+                                    "date_of_birth",
+                                    "sex",
+                                    "my_math",
+                                    "cr",
+                                    "service_date",
+                                    "admit_date",
+                                    "diagnosis_code",
+                                    "billing_diagnosis",
+                                    "fees",
+                                    "units",
+                                    "location",
+                                    "referring_provider")
+        this_patient <- as.data.frame(this_patient)
+        write_csv(this_patient, file = paste0(getwd(), "/encounter_data.csv"))
+        }
       
     })
     }
