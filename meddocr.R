@@ -44,111 +44,25 @@ library(readxl) # for working with xlsx files
   
   # Lists ----
 
-# fields <- c("cr_number",
-# "patient_name",
-# "hpi_saved_text",
-# "dob",
-# "sex",
-# "visit_type",
-# "location",
-# "chief_complaint",
-# "scope_type",
-# "foreign_body_type",
-# "foreign_body_symptoms",
-# "foreign_body_location",
-# "chronic_dz_premium")
-
-referring_providers <- c("Not in list",
-                         "Aderinola Ademidun",
-                         "Adina Birenbaum",
-                         "Aleixo Muise",
-                         "Amanda Bates",
-                         "Ambrose Au",
-                         "Amy Acker",
-                         "Andrea Moore",
-                         "Andrea Winthrop",
-                         "Anne Ellis",
-                         "Anne Moffatt",
-                         "Anupam Sehgal",
-                         "Arawn Therrien",
-                         "Ashley Fay White",
-                         "Behdad Navabi",
-                         "Carolina Jimenez",
-                         "Christen Cormier",
-                         "Ciaran McLoughlin",
-                         "Cory Scott",
-                         "Craig Lynch",
-                         "Craig Mitchell (Napanee)",
-                         "Danielle Blouin",
-                         "David Saleh",
-                         "Dawa Samdup",
-                         "Emily Kay",
-                         "Eric Smith (Belleville)",
-                         "Gabrielle Deschenes",
-                         "Gillian MacLean",
-                         "Greg Hammond, Trenton ER",
-                         "Harvinder Chawla",
-                         "Hogay Azizy",
-                         "Ivan Meiszinger",
-                         "Jae-Marie Ferdinand",
-                         "Jagdeep Walia",
-                         "Jeffrey Di Tomasso",
-                         "Jennifer Lynch",
-                         "Jessica Ladouceur",
-                         "Joanna Stanisz",
-                         "Jose Ranawaya",
-                         "Kathryn Lockington",
-                         "Keith Gregoire",
-                         "Laura Wheaton",
-                         "Mackenzie Howatt",
-                         "Mahadeva Krishantha",
-                         "Marina Kanellos-Sutton",
-                         "Mary Kate Gazendam",
-                         "Michael Derynck",
-                         "Michael Shirriff",
-                         "Mila Kolar",
-                         "Mohamed Shalaby",
-                         "Mohit Kehar",
-                         "Moyo Adeyemi",
-                         "Marina Kanellos-Sutton (NP)",
-                         "Nadine Mitchell",
-                         "Natalie Mills",
-                         "Nicholas Carman",
-                         "Nina Replete",
-                         "Peter MacPherson",
-                         "Philip Macklem",
-                         "R Garth Smith",
-                         "Richard Van Wylick",
-                         "Robert Connelly",
-                         "Rohan Rakheja",
-                         "Ronald Goldstein",
-                         "Ross Walker",
-                         "Sangoh Lee",
-                         "Sarah McKnight",
-                         "Shalea Beckwith",
-                         "Stephen Vanner",
-                         "Svetlana Stryuts",
-                         "Tag Danforth",
-                         "Trisha Warren (NP Sydenham)",
-                         "William Marcoux",
-                         "Yuka Asai")
+referring_providers <- c("Not in list")
 
 chief_complaints_list <- c("abdominal pain",
-"constipation",
-"pancreatitis",
-"choledocholithiasis",
-"abnormal liver tests",
-"upper GI symptoms",
-"GI bleed",
-"bloody diarrhea",
-"neonatal cholestasis",
-"possible celiac disease",
-"foreign body ingestion",
-"infant feeding difficulties",
-"failure to thrive",
-"IBD exacerbation",
-"foreign body ingestion",
-"generic")
+                           "abnormal liver tests",
+                           "bloody diarrhea",
+                           "celiac disease follow up",
+                           "choledocholithiasis",
+                           "constipation",
+                           "failure to thrive",
+                           "foreign body ingestion",
+                           "GI bleed",
+                           "IBD exacerbation",
+                           "IBD follow up",
+                           "infant feeding difficulties",
+                           "neonatal cholestasis",
+                           "possible celiac disease",
+                           "pancreatitis",
+                           "upper GI symptoms",
+                           "generic")
 
 visit_types_list <- c("new", "follow up", "endoscopy", "phone call")
 
@@ -243,8 +157,6 @@ celiac_ros <- "Nausea, vomiting
 Dermatitis herpetiformis
 Urticaria
 Dental enamel defects
-Short stature
-Failure to thrive
 Fractures
 Arthralgia/arthritis
 Aphthous ulcers
@@ -262,6 +174,26 @@ Hematuria - ***
 Hematochezia - ***"
 
 ibd_ros <- "Nausea/vomiting: yes***no
+
+Tenesmus: yes***no
+Urgency: yes***no
+Incontinence: yes***no
+
+Arthralgia: yes***no
+Arthritis: yes***no
+Uveitis: yes***no
+Oral ulcers: yes***no
+Skin reactions/rashes/erythema nodosum/pyoderma gangrenosum: yes***no
+Fever: yes***no
+
+Perianal pain: yes***no
+Perianal discharge: yes***no
+
+School days missed in last week: 
+
+Other illness: yes***no"
+
+ibd_fu_ros <- "Nausea/vomiting: yes***no
 
 Tenesmus: yes***no
 Urgency: yes***no
@@ -317,24 +249,23 @@ liver_famhx <- "Parents - ***
 Siblings - ***
 Ethnicity ***
 *** known consanguinity.
-*** history of liver disease, liver transplant, cystic fibrosis, or metabolic syndromes."
+*** family history of liver disease, liver transplant, cystic fibrosis, or metabolic syndromes."
 
-pancreatitis_famhx <- "Parents - ***
-Siblings - ***
-Ethnicity ***
-*** known consanguinity.
-*** history of pancreatitis, celiac disease, cystic fibrosis, thyroid disease or autoimmune disease."
+pancreatitis_famhx <- "*** family history of pancreatitis, celiac disease, thyroid disease, or autoimmune disease."
 
-eoe_famhx <- "Parents - ***
-Siblings - ***
-Ethnicity ***
-*** known consanguinity.
-*** history of allergies, asthma, eczema."
+eoe_famhx <- "*** family history of allergies, asthma, eczema."
 
 # PEx Snippets ----
 
-general_pex <- "Vitals - heart rate *** , blood pressure *** , RR *** , SpO2 *** % on room air, temperature ***.
+generic_pex <- "Vitals - heart rate *** , blood pressure *** , RR *** , SpO2 *** % on room air, temperature ***.
 Growth - height *** (*** percentile), weight *** (*** percentile), BMI *** (*** percentile).
+General - ** alert and interactive, no pallor, no scleral icterus, no rashes, no clubbing"
+
+inpatient_pex <- "Vitals - heart rate *** , blood pressure *** , RR *** , SpO2 *** % on room air, temperature ***.
+Growth - height *** (*** percentile), weight *** (*** percentile), BMI *** (*** percentile).
+General - ** alert and interactive, no pallor, no scleral icterus, no rashes, no clubbing"
+
+outpatient_pex <- "Growth - height *** (*** percentile), weight *** (*** percentile), BMI *** (*** percentile).
 General - ** alert and interactive, no pallor, no scleral icterus, no rashes, no clubbing"
 
 heent_pex <- "HEENT - *** neck/thyroid masses or enlargement, *** oral lesions"
@@ -363,6 +294,26 @@ Pertinent negatives - ***
 There is a past medical history of *** .
 Red flags include *** 
 Growth has been *** "
+
+impression_ibd_follow_up <- "who we follow for known IBD (full details in the IBD history section of this note)
+Overall, in remission*** signs of active disease, on *** treatment
+Growth - reassuring***
+Issues - ***"
+
+impression_possible_celiac <- "[one line summary of H&P & investigations].
+Pertinent positives - *** ?growth failure
+Pertinent negatives - ***
+
+***Currently on a gluten containing or gluten free or gluten reduced diet.
+
+There is a past medical history of *** .
+Red flags include *** 
+Growth has been *** "
+
+impression_follow_up_celiac <- "who we follow for biopsy proven celiac disease, on a gluten free diet.
+Symmptoms - ***
+tTG normalized - ***
+Growth - reassuring***"
 
 impression_neonatal_cholestasis <- "There *** is/not a component of transaminitis. The stools have been *** pigmented/acholic. There are presently *** no signs of encephalopathy. The child is *** feeding and growing well and clinically *** stable."
 
@@ -400,7 +351,7 @@ assessment_pancreatitis <- "Often the etiology of the first episodes of pancreat
 
 assessment_abnormal_liver_tests <- "At this point, the differential diagnosis is broad, including NAFLD/NASH, toxins/drug reaction, infection (especially viral hepatitis), autoimmune disease, metabolic disease (such as Wilson's disease), vascular compromise, and infiltrating mass."
 
-assessment_possible_celiac_disease <- "The differential diagnosis includes celiac disease, allergic-type enteropathy, inflammatory bowel disease, ***."
+assessment_possible_celiac_disease <- "The differential diagnosis for elevated celiac serology includes celiac disease, allergic-type enteropathy, infection, and inflammatory bowel disease. Some patients have mildly elevated celiac serology in the clear absence of celiac disease (for example, in patients with type I diabetes)."
 
 assessment_upper_gi_symptoms <- "The differential diagnosis includes GERD, eosinophilic esophagitis, H pylori, post-infectious gastroparesis, functional upper GI disease, an anatomic abnormality (such as a mass or malrotation), or a motility disorder (such as achalasia). Inflammatory conditions of the esophagus can lead to strictures that can cause this type of symptoms."
 
@@ -450,16 +401,16 @@ _ [Follow liver enzymes and synthetic function at least twice a week (qMon and T
 
 possible_celiac_disease_plan <- "- Upper endoscopy with biopsy for celiac disease
 - We discussed that this child must remain on a gluten containing diet until the endoscopy equal to at least 3-15 g of gluten per day (eg, 1-2 cookies or 1 slice of bread). [DGP if <2 yo]
-- Discussed that primary family members >3 yo should all be tested for celiac disease at least once and again if they have any symptoms/signs at any point
-- Discussed http://glutenfreedrugs.com/"
+- If repeating labs: tTG-IgA, total IgA, antiendomysial antibody (EMA)"
 
 celiac_follow_up_plan <- "- Discussed reassuring clinical and biochemical picture
 - Discussed general healthy eating w celiac disease, does take oats (labelled gluten free)
 - I will submit a consult for social work to assist with medical expense deduction - Incremental Cost Calculation sheet from Canada Revenue Agency – type in Gluten Free or Celiac Disease and it should appear - advised to keep receipts and made sure have doctors note confirming diagnosis with date
-- Follow up in 6 months for annual clinical eval and diet check and labs (CBC, diff, tTG-IgA, total IgA, antiendomysial antibody, TSH, B12, folate, ferritin, transferrin saturation, 25-OH vitamin D plus any indicated by clinical concern)
+- Discussed labs q3-6 months until serology normalized then annual check in w labs
 - Information provided regarding celiac-specific tax break, mother pays a company to do her taxes and will let the company know this and if support is needed from our side, she will call my office
 - Discussed that primary family members >3 yo should all be tested for celiac disease at least once and again if they have any symptoms/signs at any point
-- Discussed http://glutenfreedrugs.com/"
+- Discussed http://glutenfreedrugs.com/
+- Follow up in 3-6 months for clinical evaluation and diet check and labs (CBC, diff, tTG-IgA, total IgA, antiendomysial antibody (EMA), TSH, free T4, B12, folate, ferritin, transferrin saturation, 25-OH vitamin D plus any indicated by clinical concern)"
 
 choledocholithiasis_plan <- "- Repeat labs in morning (esp liver enzymes, liver function, lipase) and daily
 - Start IV with admission labs
@@ -538,6 +489,11 @@ ibd_exacerbation_plan <- "- Start IV/PO steroids or EEN or IFX
 - No NSAIDs, no opioids please (prefer frequent hot packs and acetaminophen)
 - If clinical deterioration, will be important to consider toxic megacolon, which should be investigated immediately with an abdo x-ray
 - Acute severe colitis patients should receive prophylactic anticoagulation due to the risks of devastating thrombotic events outweighing the minimal risk of increased bleeding"
+
+ibd_follow_up_plan <- "- Discussed avoiding NSAIDs (prefer frequent hot packs and acetaminophen)
+- Discussed to be in touch early (within a few days) if starts having GI symptoms, since it is easier to control exacerbations the earlier one is identified
+- We will check on biochemical disease activity with a fecal calprotectin and bloodwork (CBC, ESR, CRP, AST, ALT, Alk Phos, GGT, total bilirubin, direct bilirubin, albumin)
+(- Reminders: MRE, endoscopy, vaccines, annual nutrition assessment, bone age if poor growth, renal function/lytes about annually if on 5-ASA)"
 
 pancreatitis_plan <- "- No prevention beyond general health and advised to avoid large high fat meals and to stay hydrated when sick
 - Seek care and mention possible pancreatitis history if happens again
@@ -661,35 +617,45 @@ billing_diagnosis <- c("abdominal_pain_787",
                        "ulcerative_colitis_556",
                        "vomiting_787")
 
+# IBD spreadsheet column names
 
-#Source in my previous patient data
+ibd_history_columns <- c("name",
+                          "date_of_birth",
+                          "sex",
+                          "cr",
+                          "diagnosis",
+                          "presentation",
+                          "location",
+                          "diagnosis_date",
+                          "paris_classification",
+                          "induction_therapy",
+                          "ASCA_ANCA",
+                          "eims",
+                          "complications",
+                          "last_endoscopy",
+                          "last_mre",
+                          "last_pucai_pcdai",
+                          "last_tdm",
+                          "fecal_calprotectin",
+                          "therapy_history",
+                          "current_therapy",
+                          "dose",
+                          "frequency",
+                          "covered",
+                          "insurance_company",
+                          "other_notes")
+
+# Load in my previous patient data
+ibd_database <- read_excel("IBD.xlsx")
+
+is_known_IBD_patient <- FALSE
+
+# Load in my previous patient data
 
 clinical_database <- read_excel("clinical_database.xlsx",
                                 col_types = c("text", "date", "text", "text", "text", "date", "date", "text",
                                               "text", "numeric", "numeric", "text", "text", "text", "text", "text", "text"))
 
-# Functions for use within the app ----
-    
-# Save note to docx file with patient name/cr/visit type as filename when the save button is pressed
-    # note: this script will also write an intermediate .txt file with the same information in case office is not available
-    # this also allows the text to be reloaded in R line by line which is required for the officer package to place the text
-    # into a docx file (officer functions are not vectorized)
-  
-  savedocxData <- function(data, patient_name, cr_number, visit_type) {
-    
-    txt_filename <- paste0("/", patient_name, "_", cr_number, "_", visit_type, ".txt")
-    lapply(data, write, txt_filename, append = TRUE, ncolumns = 1000)
-    
-    docx_filename <- paste0(getwd(), "/", patient_name, "_", cr_number, "_", visit_type, ".docx")
-    
-    text_as_vector <- readLines(txt_filename)
-    output_middle <- paste0('body_add_par("', text_as_vector, '") %>%')
-    output_final <- c("read_docx() %>%", output_middle, " print(target = docx_filename)")
-    
-    docx1 <- eval(parse(text = output_final))
-    
-  }
-    
   
 # Actual app ----
   
@@ -756,7 +722,10 @@ ui <- fluidPage(
       conditionalPanel(
         condition = "input.visit_type == 'follow up' &
             (input.location == 'clinic' | input.location == 'PRAC' | input.location == 'COPC' | input.location == 'ER')",
-        checkboxInput("chronic_dz_premium", "Chronic Disease Premium", value = FALSE, width = NULL),
+        checkboxInput("chronic_dz_premium",
+                      "Chronic Disease Premium",
+                      value = FALSE,
+                      width = NULL),
         br(),
         h4("Eligible chronic diseases:"),
         p("Ulcerative colitis (556)"),
@@ -798,12 +767,6 @@ ui <- fluidPage(
       textInput("guardian", "Guardian", value = "grandparent")
       ),
 
-    # Free text to enter a diagnosis if it is a follow up patient
-    conditionalPanel(
-      condition = "input.visit_type == 'follow up'",
-      textInput("diagnosis_section", "Diagnosis")
-    ),
-    
     # Free text to enter a reason for referral if it is a new/consult patient
     conditionalPanel(
       condition = "input.visit_type == 'new'",
@@ -826,13 +789,18 @@ ui <- fluidPage(
     conditionalPanel(
       condition = "input.visit_type == 'new' | input.visit_type == 'follow up'",
 
-            textAreaInput("hpi_section", "History of Presenting Illness",
-                        "[brief narrative]", rows = 6, width = "100%", resize = "both"),
+            textAreaInput("hpi_section", 
+                          "History of Presenting Illness",
+                          "[brief narrative]",
+                          rows = 6,
+                          width = "100%",
+                          resize = "both"),
         
             conditionalPanel(
               condition = ("input.chief_complaint == 'abdominal pain' |
                            input.chief_complaint == 'bloody diarrhea' |
-                           input.chief_complaint == 'IBD exacerbation'"),
+                           input.chief_complaint == 'IBD exacerbation' |
+                           input.chief_complaint == 'IBD follow up'"),
               tags$b("Pediatric Ulcerative Colitis Activity Index (PUCAI):"),
               selectInput("pucai_pain", tags$span(style = "font-weight: 400", "Abdominal Pain"), choices = c("No pain (0)",
                                                                       "Pain can be ignored (5)",
@@ -889,7 +857,7 @@ ui <- fluidPage(
     # Impression section if relevant visit type
     conditionalPanel(
       condition = "input.visit_type == 'new' | input.visit_type == 'follow up'",
-        textAreaInput("pex_section", "Physical Examination", general_pex, width = "100%", rows = 6),
+        textAreaInput("pex_section", "Physical Examination", generic_pex, width = "100%", rows = 6),
         textAreaInput("inv_section", "Investigations", inv, width = "100%", rows = 4),
         textAreaInput("impression_section",
                       "Impression:",
@@ -904,12 +872,17 @@ ui <- fluidPage(
       condition = ("input.visit_type == 'phone call'"),
       textInput("discussion_time_section",
                 "Discussion Time (must be >=10 min to bill):",
-                paste0(hour(now()), (
-                       if (minute(now()) < 10) {
-                         paste0("0", minute(now()))
-                       } else {
-                         minute(now())
-                       }),
+                paste0(
+                  if (hour(now()) < 10) {
+                    paste0("0", hour(now()))
+                  } else {
+                    hour(now())
+                  },
+                  (if (minute(now()) < 10) {
+                       paste0("0", minute(now()))
+                    } else {
+                       minute(now())
+                      }),
                        "h to ***"),
                 "h to *** h [must be >=10 min]",
                 width = "100%"),
@@ -956,26 +929,136 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   
+  # Save note to docx file with patient name/cr/visit type as filename when the save button is pressed
+  # note: this script will also write an intermediate .txt file with the same information in case office is not available
+  # this also allows the text to be reloaded in R line by line which is required for the officer package to place the text
+  # into a docx file (officer functions are not vectorized)
+  
+  savedocxData <- function(data, patient_name, cr_number, visit_type) {
+    
+    txt_filename <- paste0("/Users/danielmulder/Library/CloudStorage/OneDrive-KingstonHealthSciencesCentre/Clinical/txt", "/", patient_name, "_", cr_number, "_", visit_type,"_", input$encounter_date, ".txt")
+    lapply(data, write, txt_filename, append = TRUE, ncolumns = 1000)
+    
+    docx_filename <- paste0(getwd(), "/", patient_name, "_", cr_number, "_", visit_type, "_", input$encounter_date, ".docx")
+    
+    text_as_vector <- readLines(txt_filename)
+    output_middle <- paste0('body_add_par("', text_as_vector, '") %>%')
+    output_final <- c("read_docx() %>%", output_middle, " print(target = docx_filename)")
+    
+    docx1 <- eval(parse(text = output_final))
+    
+  }
+  
+  # Load in IBD patient data and save as a text object to place in IBD patient notes
+  
+  formDataIBD <- reactive({
+    if (input$cr_number %in% ibd_database$cr) {
+      is_known_IBD_patient <<- TRUE
+      print("Matching record found, loading prior information...")
+      known_IBD_patient <<- filter(ibd_database, ibd_database$cr == input$cr_number)
+      known_IBD_patient_cr <<- known_IBD_patient[[4]][1]
+      known_IBD_patient_name <<- known_IBD_patient[[1]][1]
+      known_IBD_patient_dob <<- known_IBD_patient[[2]][1]
+      known_IBD_patient_sex <<- known_IBD_patient[[3]][1]
+      known_IBD_patient_diagnosis <<- known_IBD_patient[[5]][1]
+      known_IBD_patient_presentation <<- known_IBD_patient[[6]][1]
+      known_IBD_patient_location <<- known_IBD_patient[[7]][1]
+      known_IBD_patient_date <<- known_IBD_patient[[8]][1]
+      known_IBD_patient_paris <<- known_IBD_patient[[9]][1]
+      known_IBD_patient_induction <<- known_IBD_patient[[10]][1]
+      known_IBD_patient_asca_anca <<- known_IBD_patient[[11]][1]
+      known_IBD_patient_eims <<- known_IBD_patient[[12]][1]
+      known_IBD_patient_complications <<- known_IBD_patient[[13]][1]
+      known_IBD_patient_last_endo <<- known_IBD_patient[[14]][1]
+      known_IBD_patient_last_mre <<- known_IBD_patient[[15]][1]
+      known_IBD_patient_last_ai <<- known_IBD_patient[[16]][1]
+      known_IBD_patient_last_tdm <<- known_IBD_patient[[17]][1]
+      known_IBD_patient_fcal <<- known_IBD_patient[[18]][1]
+      known_IBD_patient_therapy_history <<- known_IBD_patient[[19]][1]
+      known_IBD_patient_current_therapy <<- known_IBD_patient[[20]][1]
+      known_IBD_patient_dose <<- known_IBD_patient[[21]][1]
+      known_IBD_patient_frequency <<- known_IBD_patient[[22]][1]
+      known_IBD_patient_covered <<- known_IBD_patient[[23]][1]
+      known_IBD_patient_insurance <<- known_IBD_patient[[24]][1]
+      known_IBD_patient_other_notes <<- known_IBD_patient[[25]][1]
+      print(paste0(known_IBD_patient))
+    } else {
+      is_known_IBD_patient <<- FALSE
+      print("No prior matching IBD patients found")
+    }
+    if (is_known_IBD_patient == TRUE) {
+    return(glue("IBD History:",
+                "\n",
+                paste("Diagnosis -", known_IBD_patient[[5]][1]),
+                "\n",
+                paste("Presentation -", known_IBD_patient[[6]][1]),
+                "\n",
+                paste("Disease Location -", known_IBD_patient[[7]][1]),
+                "\n",
+                paste("Diagnosis Date -", ymd(known_IBD_patient[[8]][1])),
+                "\n",
+                paste("Paris Classification -", known_IBD_patient[[9]][1]),
+                "\n",
+                paste("Induction Therapy -", known_IBD_patient[[10]][1]),
+                "\n",
+                paste("IBD Serology -", known_IBD_patient[[11]][1]),
+                "\n",
+                paste("Extra-intestinal Manifestations -", known_IBD_patient[[12]][1]),
+                "\n",
+                paste("Complications -", known_IBD_patient[[13]][1]),
+                "\n",
+                paste("Last Endoscopy -", known_IBD_patient[[14]][1]),
+                "\n",
+                paste("Last MRE -", known_IBD_patient[[15]][1]),
+                "\n",
+                paste("Last PUCAI or PCDAI -", known_IBD_patient[[16]][1]),
+                "\n",
+                paste("Last TDM -", known_IBD_patient[[17]][1]),
+                "\n",
+                paste("Fecal Calprotectin -", known_IBD_patient[[18]][1]),
+                "\n",
+                paste("Therapy History -", known_IBD_patient[[19]][1]),
+                "\n",
+                paste("Current Therapy -", known_IBD_patient[[20]][1]),
+                "\n",
+                paste("Dose -", known_IBD_patient[[21]][1]),
+                "\n",
+                paste("Frequency -", known_IBD_patient[[22]][1]),
+                "\n",
+                paste("Drug Covered -", known_IBD_patient[[23]][1]),
+                "\n",
+                paste("Insurance Company -", known_IBD_patient[[24]][1]),
+                "\n",
+                paste("Other Notes -", known_IBD_patient[[25]][1])
+    )
+    )} else {
+      "IBD History: (unknown at this point)"
+    }
+  })
+  
+  output$ibd_history_text <- renderPrint(formDataIBD())
+  
+  
+  
   # For each section of the note, there is either a default text loaded into the textbox
     # or
   # a context specific pre-written text snippets that will change depending on the demographic info in the sidebar
     # the demographic info is all reactive and will change the textbox structure and note output preview dynamically if updated
   
-  # Diagnosis Section ----
-    
-    output$diagnosis_saved_text <- renderText({input$diagnosis_section})
-    
-  # Reason for Referral Section ----
-    
-    output$diagnosis_saved_text <- renderText({input$reason_for_referral_section})
-    
-  # Problem List Section ----
-    
-    output$problem_list_saved_text <- renderText({input$problem_list_section})
-    
+  
   # Disease History Section ----
-    
-    output$disease_history_saved_text <- renderText({input$disease_history_section})
+
+  observe({
+ 
+    updateTextAreaInput(session, "disease_history_section",
+                        value = 
+                          if (input$chief_complaint == "IBD exacerbation" | input$chief_complaint == "IBD follow up") {
+                            formDataIBD()
+                        } else {
+                          paste("***")
+                        }
+    )
+  })
   
   # History of Presenting Illness Section ----
     
@@ -985,16 +1068,14 @@ server <- function(input, output, session) {
                           value = 
                             if (input$chief_complaint == "neonatal cholestasis") {
                                 paste(hpi_neonatal_cholestasis, sep = "\n")
-                              }  else if (input$chief_complaint == "IBD exacerbation") {
-                                paste(ibd_background, sep = "\n")
-                                } else {
+                              } else if (input$chief_complaint == "possible celiac disease") {
+                                paste("***Remains on a gluten containing diet", hpi_text, sep = "\n")
+                              } else {
                                   paste(hpi_text, sep = "\n")
-                                  }
+                              }
                           )
       
     })
-  
-    output$hpi_saved_text <- renderText({input$hpi_section})
 
     
   # PUCAI Section ----
@@ -1064,6 +1145,7 @@ server <- function(input, output, session) {
   # Review of Systems Section ----
     
     observe({
+      
       cc <- input$chief_complaint
       
       updateTextAreaInput(session, "ros_section",
@@ -1084,7 +1166,7 @@ server <- function(input, output, session) {
                                 paste(general_ros, upper_gi_ros, eim_ros, id_ros, sep = "\n")
                               } else if (cc == "neonatal cholestasis") {
                                 paste(general_ros, stooling_ros, sep = "\n")
-                              } else if (cc == "possible celiac disease") {
+                              } else if (cc == "possible celiac disease" | cc == "celiac disease follow up") {
                                 paste(general_ros, upper_gi_ros, eim_ros, diet_recall_ros, stooling_ros, celiac_ros, sep = "\n")
                               } else if (cc == "choledocholithiasis") {
                                 paste(general_ros, upper_gi_ros, diet_recall_ros, stooling_ros, liver_ros, sep = "\n")
@@ -1094,15 +1176,15 @@ server <- function(input, output, session) {
                                 paste(general_ros, infant_feeding_ros, stooling_ros, sep = "\n")
                               } else if (cc == "GI bleed") {
                                 paste(general_ros, bleed_ros, upper_gi_ros, stooling_ros, liver_ros, id_ros, sep = "\n")
-                              }  else if (cc == "IBD exacerbation") {
-                                paste(ibd_ros, sep = "\n")
+                              } else if (cc == "IBD follow up") {
+                                paste(ibd_ros)
+                              } else if (cc == "IBD exacerbation") {
+                                paste(ibd_ros)
                               } else {
                                 paste(general_ros, upper_gi_ros, diet_recall_ros, stooling_ros, gu_ros, neuro_ros, liver_ros, id_ros, sep = "\n")
                               }
                           )
       })
-    
-    output$ros_saved_text <- renderText({input$ros_section})
     
   # Past medical history (and meds/allergies/imm/dev Hx) Section ----
     
@@ -1117,23 +1199,16 @@ server <- function(input, output, session) {
       
       updateTextAreaInput(session, "pmhx_section",
                           value = 
-                            if (age_raw$year < 2) {
+                            if (input$chief_complaint == "IBD exacerbation" | input$chief_complaint == "IBD follow up") {
+                              formDataIBD()
+                            }
+                            else if (age_raw$year < 2) {
                               paste(young_pmhx)
                             } else {
                               paste(older_pmhx)
                             }
                           )
       })
-    
-    output$pmhx_saved_text <- renderText({input$pmhx_section})
-    
-    output$meds_saved_text <- renderText({input$meds_section})
-    
-    output$allergies_saved_text <- renderText({req(input$allergies_section)})
-    
-    output$immunizations_saved_text <- renderText({input$immunizations_section})
-    
-    output$devhx_saved_text <- renderText({input$devhx_section})
     
   # Social Hx Section ----
     observe({
@@ -1156,8 +1231,6 @@ server <- function(input, output, session) {
 
     })
     
-    output$socialhx_saved_text <- renderText({input$socialhx_section})    
-    
   # Family History Section ----
     
     observe({
@@ -1169,7 +1242,7 @@ server <- function(input, output, session) {
                             if (cc == "choledocholithiasis" | cc == "abnormal liver tests" | cc == "neonatal cholestasis") {
                               paste(liver_famhx)
                             } else if (cc == "pancreatitis") {
-                              paste(pancreatitis_famhx, liver_famhx, sep = "\n")
+                              paste(liver_famhx, pancreatitis_famhx, sep = "\n")
                             } else if (cc == "upper GI symptoms") {
                               paste(gi_famhx, eoe_famhx, sep = "\n")
                             } else {
@@ -1178,12 +1251,19 @@ server <- function(input, output, session) {
       )
     })
     
-    output$familyhx_saved_text <- renderText({input$familyhx_section})
     
   # Physical Exam Section ----
     observe({
       
       cc <- input$chief_complaint
+      
+      general_pex <- if ((input$location == "clinic") |
+                         (input$location == "PRAC") |
+                         (input$location == "COPC")) {
+        outpatient_pex
+      } else {
+        inpatient_pex
+      }
       
       updateTextAreaInput(session, "pex_section",
                           value = 
@@ -1211,11 +1291,7 @@ server <- function(input, output, session) {
       )
     })
     
-    output$pex_saved_text <- renderText({input$pex_section})
-    
-  # Investigations Section ----
-    
-    output$inv_saved_text <- renderText({input$inv_section})
+  # Impression Section ----
     
     observe({
       
@@ -1239,12 +1315,12 @@ server <- function(input, output, session) {
       updateTextAreaInput(session, "impression_section",
                           value = 
                             if (cc == "neonatal cholestasis") {
-                              paste0(input$patient_name,
-                                    " is a ",
+                              paste(input$patient_name,
+                                    "is a",
                                     age,
-                                    " old ",
+                                    "old",
                                     input$sex,
-                                    " who presents with ",
+                                    "who presents with",
                                     cc,
                                     ". ",
                                     "\n",
@@ -1312,6 +1388,33 @@ server <- function(input, output, session) {
                                      impression_generic,
                                      "\n",
                                     impression_bloody_diarrhea)
+                            } else if (cc == "possible celiac disease") {
+                              paste0(input$patient_name,
+                                     " is a ",
+                                     age,
+                                     " old ",
+                                     input$sex,
+                                     " who presents with ",
+                                     cc,
+                                     ". ",
+                                     "\n",
+                                     impression_possible_celiac)
+                            } else if (cc == "celiac disease follow up") {
+                              paste0(input$patient_name,
+                                     " is a ",
+                                     age,
+                                     " old ",
+                                     input$sex,
+                                     " ",
+                                     impression_follow_up_celiac)
+                            } else if (cc == "IBD follow up") {
+                              paste0(input$patient_name,
+                                     " is a ",
+                                     age,
+                                     " old ",
+                                     input$sex,
+                                     " ",
+                                     impression_ibd_follow_up)
                             } else {
                               paste0(input$patient_name,
                                      " is a ",
@@ -1328,8 +1431,6 @@ server <- function(input, output, session) {
                             }
       )
     })
-    
-    output$impression_saved_text2 <- renderText({input$impression_section})
     
   # Assessment Section ----
     observe({
@@ -1362,13 +1463,8 @@ server <- function(input, output, session) {
                         )
     })
     
-    output$assessment_saved_text <- renderText({input$assessment_section})
     
   # Phone Call Section ----
-    
-    output$discussion_time_saved_text <- renderText({input$discussion_time_section})
-    
-    output$call_from_saved_text <- renderText({input$call_from_section})
     
     observe({
       
@@ -1383,7 +1479,6 @@ server <- function(input, output, session) {
                             })
       })
        
-    output$phone_call_saved_text <- renderText({input$phone_call_section})
     
   # Plan Section ----
     # Note that this section includes a deep tree of logical if/else-if statements for foreign bodies
@@ -1409,6 +1504,8 @@ server <- function(input, output, session) {
                               paste(neonatal_cholestasis_plan)
                             } else if (cc == "possible celiac disease") {
                               paste(possible_celiac_disease_plan)
+                            } else if (cc == "celiac disease follow up") {
+                              paste(celiac_follow_up_plan)
                             } else if (cc == "choledocholithiasis") {
                               paste(choledocholithiasis_plan)
                             } else if (cc == "infant feeding difficulties") {
@@ -1423,6 +1520,8 @@ server <- function(input, output, session) {
                               paste(bloody_diarrhea_plan)
                             } else if (cc == "IBD exacerbation") {
                               paste(ibd_exacerbation_plan)
+                            } else if (cc == "IBD follow up") {
+                              paste(ibd_follow_up_plan)
                             } else if (cc == "pancreatitis") {
                               paste(pancreatitis_plan)
                             } else if (cc == "upper GI symptoms") {
@@ -1520,8 +1619,6 @@ server <- function(input, output, session) {
       )
     })
     
-    output$plan_saved_text <- renderText({input$plan_section})
-    
   # Scope Findings Section ----
     observe({
 
@@ -1538,8 +1635,6 @@ server <- function(input, output, session) {
                             }
       )
     })
-    
-    output$scope_findings_saved_text <- renderText({input$scope_findings_section})
     
     
   # Data saving/collating section ----
@@ -1822,7 +1917,11 @@ server <- function(input, output, session) {
                 input$ros_section,
                 "",
                 "Past Medical History",
-                input$pmhx_section,
+                if (input$chief_complaint == "IBD history") {
+                  ibd_history_text
+                  } else {
+                    input$pmhx_section
+                  },
                 "",
                 "Medications",
                 input$meds_section,
@@ -1872,18 +1971,18 @@ server <- function(input, output, session) {
                          "Identification",
                          recreate_id_text(),
                          "",
-                         "Diagnosis:",
-                         input$diagnosis_section,
-                         "",
                          "Problem List:",
                          input$problem_list_section,
                          "",
                          "Disease History:",
-                         input$disease_history_section,
+                         if (input$chief_complaint == "IBD history") {
+                           ibd_history_text
+                         } else {
+                           input$disease_history_section
+                           },
                          "",
                          "Updates:",
                          input$hpi_section,
-                         "",
                          recreate_pucai_text(),
                          "Review of Systems",
                          input$ros_section,
@@ -1898,9 +1997,7 @@ server <- function(input, output, session) {
                          input$inv_section,
                          "",
                          "Impression",
-                         recreate_impression_text(),
                          input$impression_section,
-                         "",
                          input$assessment_section,
                          "",
                          "Plan",
@@ -2211,7 +2308,7 @@ server <- function(input, output, session) {
       
       fees_pre_age <- if (diagnosis_code == "A265A" | diagnosis_code == "C265A") {
         175.40
-      } else if (diagnosis_code == "A263A") {
+      } else if (diagnosis_code == "A263A" | diagnosis_code == "A263A,E078A") {
         80.05
       } else if (diagnosis_code == "Z399A") {
         92.50
@@ -2268,9 +2365,9 @@ server <- function(input, output, session) {
       }
       
       units <- if (diagnosis_code == "A263A,E078A") {
-        paste0("1*", age_premium, "*1.5")
+        as.numeric(age_premium)*1.5
       } else {
-        paste0("1*", age_premium)
+        age_premium
       }
       
       if (file.exists(paste0(getwd(), "/encounter_data.csv"))) {
@@ -2282,7 +2379,15 @@ server <- function(input, output, session) {
                                           my_math_text,
                                           input$cr_number,
                                           paste(as.Date(input$encounter_date)),
-                                          paste(as.Date(input$admission_date)),
+                                          paste(as.Date(
+                                            if (input$location == "clinic" |
+                                                input$location == "PRAC" |
+                                                input$location == "COPC" |
+                                                input$location == "ER" |
+                                                input$location == "OR") {
+                                              input$encounter_date
+                                            } else {
+                                                input$admission_date})),
                                           diagnosis_code,
                                           billing_diagnosis,
                                           as.character(fees),
