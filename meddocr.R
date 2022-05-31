@@ -936,7 +936,7 @@ server <- function(input, output, session) {
   
   savedocxData <- function(data, patient_name, cr_number, visit_type) {
     
-    txt_filename <- paste0("/Users/danielmulder/Library/CloudStorage/OneDrive-KingstonHealthSciencesCentre/Clinical/txt", "/", patient_name, "_", cr_number, "_", visit_type,"_", input$encounter_date, ".txt")
+    txt_filename <- paste0("/Clinical/txt", "/", patient_name, "_", cr_number, "_", visit_type,"_", input$encounter_date, ".txt")
     lapply(data, write, txt_filename, append = TRUE, ncolumns = 1000)
     
     docx_filename <- paste0(getwd(), "/", patient_name, "_", cr_number, "_", visit_type, "_", input$encounter_date, ".docx")
